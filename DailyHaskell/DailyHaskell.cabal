@@ -25,6 +25,7 @@ source-repository head
 
 library
   exposed-modules:
+      DailyOne
       Lib
   other-modules:
       Paths_DailyHaskell
