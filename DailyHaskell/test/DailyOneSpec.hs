@@ -1,20 +1,23 @@
 -- file: Spec.hs
 {-# OPTIONS_GHC -Wno-type-defaults #-}
-module Main where
+module DailyOneSpec where
 
 import Test.Hspec
 import DailyOne
 
-main :: IO ()
-main = hspec $ do
-    describe "quadratic" $
-        it "produces the quadratic of 1, 1, 1, and 1" $
-        quadratic 1 1 1 1 `shouldBe` 4
+spec :: Spec
+spec = do
+    describe "quadratic" $ do
+        it "produces the quadratic 0" $
+            quadratic 0 0 0 0 `shouldBe` 0
+        
+        it "produces the quadratic 4" $
+            quadratic 1 1 1 1 `shouldBe` 4
 
-    describe "scaleVector" $
-        it "produces the scaled vector of 2, (1, 1)" $
-        (1 * 2, 1 * 2) `shouldBe` (2,2)
+    describe "scaleVector" $ do
+        it "produces the scaled vector (2,2)" $
+            scaleVector 2 (1,1) `shouldBe` (2,2)
 
-    describe "tripleDistance" $
-        it "produces the distance between (1,1,1) and (2,2,2)" $
-        sqrt((2 - 1) ^ 2 + (2 - 1) ^ 2 + (2 - 1) ^ 2) `shouldBe` 1.73205080757
+    describe "tripleDistance" $ do
+        it "produces the distance 1.73205080757" $
+            tripleDistance (1,1,1) (2,2,2) `shouldBe` 1.73205080757
