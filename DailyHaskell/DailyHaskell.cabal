@@ -103,6 +103,7 @@ test-suite DailyHaskell-test
   type: exitcode-stdio-1.0
   main-is: Spec.hs
   other-modules:
+      DayOneSpec
       Paths_DailyHaskell
   hs-source-dirs:
       test
