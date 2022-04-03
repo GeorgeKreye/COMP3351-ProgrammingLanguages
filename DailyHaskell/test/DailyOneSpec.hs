@@ -20,4 +20,4 @@ spec = do
 
     describe "tripleDistance" $ do
         it "produces the distance 1.73205080757" $
-            tripleDistance (1,1,1) (2,2,2) `shouldBe` sqrt(3)
+            tripleDistance (1,1,1) (2,2,2) `shouldBe` 1.7320508075688772
