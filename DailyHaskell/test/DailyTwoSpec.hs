@@ -5,7 +5,6 @@ module DailyTwoSpec where
 
     spec :: Spec 
     spec = do
-        describe "placeholder" $ do
-            it "placeholder" $
-                placeholder `shouldBe` 2
-                
+        describe "every4th" $ do
+            it "produces the list []" $
+                every4th [1,2,3,4] `shouldBe` []
