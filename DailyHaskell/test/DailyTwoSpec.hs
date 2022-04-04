@@ -8,3 +8,5 @@ module DailyTwoSpec where
         describe "every4th" $ do
             it "produces the list []" $
                 every4th [1,2,3,4] `shouldBe` []
+            it "produces the list [5,10]" $
+                every4th [1,2,3,4,5,6,7,8,9,10] `shouldBe` [5,10]
