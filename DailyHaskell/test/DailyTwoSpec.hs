@@ -8,3 +8,4 @@ module DailyTwoSpec where
         describe "placeholder" $ do
             it "placeholder" $
                 placeholder `shouldBe` 2
+                
