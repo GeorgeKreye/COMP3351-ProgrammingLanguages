@@ -11,5 +11,7 @@ module DailyTwoSpec where
             it "produces the list [5,10]" $
                 every4th [1,2,3,4,5,6,7,8,9,10] `shouldBe` [5,10]
         describe "tupleDotProduct" $ do 
-            it "produces the dot product 4" $
+            it "produces the dot product 2" $
                 tupleDotProduct [1,2] [1,2] `shouldBe` 2
+            it "produces the dot product 349/140" $
+                tupleDotProduct [3,6,2,1] [5,4,8,7] `shouldBe` 349 / 140
