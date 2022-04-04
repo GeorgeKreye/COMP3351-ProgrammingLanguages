@@ -11,6 +11,12 @@ module DailyTwo where
         if n < length lst
             then
                 if ((n + 1) `rem` 5 == 0) && (n /= 0)
-                    then [lst!!n] ++ every4thR lst (n+1)
-                    else every4thR lst (n+1)
+                    then [lst!!n] ++ every4thR lst (n + 1)
+                    else every4thR lst (n + 1)
             else []
+    {- -}
+    tupleDotProduct :: Fractional p => [p] -> [p] -> p
+    tupleDotProduct l1 l2 =
+        if null l1
+            then 0
+            else (head l1 * (1 / head l2)) + tupleDotProduct (tail l1) (tail l2)

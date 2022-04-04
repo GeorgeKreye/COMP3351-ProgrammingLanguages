@@ -10,3 +10,6 @@ module DailyTwoSpec where
                 every4th [1,2,3,4] `shouldBe` []
             it "produces the list [5,10]" $
                 every4th [1,2,3,4,5,6,7,8,9,10] `shouldBe` [5,10]
+        describe "tupleDotProduct" $ do 
+            it "produces the dot product 4" $
+                tupleDotProduct [1,2] [1,2] `shouldBe` 2
