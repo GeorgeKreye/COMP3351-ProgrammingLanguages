@@ -10,7 +10,7 @@ module DailyTwo where
     every4thR lst n =
         if n < length lst
             then
-                if n `rem` 4 == 0
+                if n `rem` 5 == 0
                     then every4thR lst (n+1) ++ [lst!!n]
                     else every4thR lst (n+1)
             else []
