@@ -18,3 +18,5 @@ module DailyTwoSpec where
         describe "appendToEach" $ do
             it "produces the list [\"hihi\"]" $
                 appendToEach "hi" ["hi"] `shouldBe` ["hihi"]
+            it "produces the list [\"no way\",\"yes way\"]" $
+                appendToEach " way" ["no","yes"] `shouldBe` ["no way","yes way"]
