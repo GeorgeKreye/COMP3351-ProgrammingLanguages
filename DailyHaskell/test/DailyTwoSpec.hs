@@ -15,3 +15,6 @@ module DailyTwoSpec where
                 tupleDotProduct [1,2] [1,2] `shouldBe` 2
             it "produces the dot product 349/140" $
                 tupleDotProduct [3,6,2,1] [5,4,8,7] `shouldBe` 349 / 140
+        describe "appendToEach" $ do
+            it "produces the list [\"hihi\"]" $
+                appendToEach "hi" ["hi"] `shouldBe` ["hihi"]
