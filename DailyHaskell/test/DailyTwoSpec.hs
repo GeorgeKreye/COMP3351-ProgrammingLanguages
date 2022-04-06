@@ -20,3 +20,8 @@ module DailyTwoSpec where
                 appendToEach "hi" ["hi"] `shouldBe` ["hihi"]
             it "produces the list [\"no way\",\"yes way\"]" $
                 appendToEach " way" ["no","yes"] `shouldBe` ["no way","yes way"]
+        describe "toSetList" $ do
+            it "produces the list [3,2,1]" $
+                toSetList [3,2,1,2,1,3,2,3,1] `shouldBe` [3,2,1]
+            it "produces the list [4,7,9,3,1,2,8,10,5,6]" $
+                toSetList [4,7,9,3,1,2,8,10,5,3,9,10,3,1,4,8,6,1,10,6,5,4,8,5,2,7,2,7,6,9] `shouldBe` [4,7,9,3,1,2,8,10,5,6]

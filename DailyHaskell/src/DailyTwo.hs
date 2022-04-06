@@ -31,3 +31,9 @@ module DailyTwo where
         if null l
             then []
             else (head l ++ s) : appendToEach s (tail l)
+    {-
+        Removes all duplicate elements from a list to make it a set.
+    -}
+    toSetList :: Eq a => [a] -> [a]
+    toSetList [] = []
+    toSetList (x:xs) = x : toSetList (filter (/= x) xs)
