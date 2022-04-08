@@ -30,23 +30,18 @@ module DailyThree where
     {- 
         Given two lists, returns the differences in unique elements
         between them.
-        Call setListDiff, setListDiffL and setListDiffR are helper functions
+        setListDiff is what should be called, as setListDiffL and
+        setListDiffR are recursive helper functions.
     -}
     setListDiff :: Eq a => [a] -> [a] -> [a]
-    setListDiff l1 l2 = setListDiffM (toSetList l1) (toSetList l2)
-    setListDiffM :: Eq a => [a] -> [a] -> [a]
-    setListDiffM l1 l2
-      | null l1 && null l2 = []
-      | not (null l1) && null l2 = l1
-      | null l1 && not (null l2) = l2
-      | otherwise = setListDiffL l1 l2 ++ setListDiffR l1 l2 ++ setListDiffM (tail l1) (tail l2)
+    setListDiff l1 l2 = setListDiffL (toSetList l1) (toSetList l2) ++ setListDiffR (toSetList l1) (toSetList l2)
     setListDiffL :: Eq a => [a] -> [a] -> [a]
     setListDiffL l1 l2
-      | null l2 = [head l1]
-      | head l1 == head l2 = []
-      | otherwise = setListDiffL l1 (tail l2)
+      | null l1 = []
+      | head l1 `notElem` l2 = head l1 : setListDiffL (tail l1) l2
+      | otherwise = setListDiffL (tail l1) l2
     setListDiffR :: Eq a => [a] -> [a] -> [a]
     setListDiffR l1 l2
-      | null l1 = [head l2]
-      | head l1 == head l2 = []
-      | otherwise = setListDiffR (tail l1) l2
+      | null l2 = []
+      | head l2 `notElem` l1 = head l2 : setListDiffR l1 (tail l2)
+      | otherwise = setListDiffR l1 (tail l2)
