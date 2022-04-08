@@ -1,4 +1,5 @@
 module DailyThree where
+    import DailyTwo (toSetList)
     {- 
         Given an element and a list, removes all elements that are not the
         given element and returns the resulting list
@@ -26,3 +27,26 @@ module DailyThree where
       | null l = []
       | head l == a = b : substitute a b (tail l)
       | otherwise = head l : substitute a b (tail l)
+    {- 
+        Given two lists, returns the differences in unique elements
+        between them.
+        Call setListDiff, setListDiffL and setListDiffR are helper functions
+    -}
+    setListDiff :: Eq a => [a] -> [a] -> [a]
+    setListDiff l1 l2 = setListDiffM (toSetList l1) (toSetList l2)
+    setListDiffM :: Eq a => [a] -> [a] -> [a]
+    setListDiffM l1 l2
+      | null l1 && null l2 = []
+      | not (null l1) && null l2 = l1
+      | null l1 && not (null l2) = l2
+      | otherwise = setListDiffL l1 l2 ++ setListDiffR l1 l2 ++ setListDiffM (tail l1) (tail l2)
+    setListDiffL :: Eq a => [a] -> [a] -> [a]
+    setListDiffL l1 l2
+      | null l2 = [head l1]
+      | head l1 == head l2 = []
+      | otherwise = setListDiffL l1 (tail l2)
+    setListDiffR :: Eq a => [a] -> [a] -> [a]
+    setListDiffR l1 l2
+      | null l1 = [head l2]
+      | head l1 == head l2 = []
+      | otherwise = setListDiffR (tail l1) l2
