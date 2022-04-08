@@ -17,3 +17,12 @@ module DailyThree where
       | null l = 0
       | head l == e = countOccurences e (tail l) + 1
       | otherwise = countOccurences e (tail l)
+    {- 
+        Given a list and two elements, substitutes all instances of
+        element a with element b and returns the resulting list
+    -}
+    substitute :: Eq a => a -> a -> [a] -> [a]
+    substitute a b l
+      | null l = []
+      | head l == a = b : substitute a b (tail l)
+      | otherwise = head l : substitute a b (tail l)
