@@ -10,18 +10,18 @@ module DailyTwo where
     every4thR lst n =
         if n < length lst
             then
-                if ((n + 1) `rem` 5 == 0) && (n /= 0)
+                if ((n + 1) `rem` 4 == 0) && (n /= 0)
                     then (lst!!n) : every4thR lst (n + 1)
                     else every4thR lst (n + 1)
             else []
     {- 
         Gets the dot product of two lists.
     -}
-    tupleDotProduct :: Fractional p => [p] -> [p] -> p
-    tupleDotProduct l1 l2 =
+    tupleDotQuotient :: Fractional p => [p] -> [p] -> p
+    tupleDotQuotient l1 l2 =
         if null l1
             then 0
-            else (head l1 * (1 / head l2)) + tupleDotProduct (tail l1) (tail l2)
+            else (head l1 * (1 / head l2)) + tupleDotQuotient (tail l1) (tail l2)
     {- 
         Concats a string to all strings contained in a passed list,
         and returns the list of all the concat-ed strings
