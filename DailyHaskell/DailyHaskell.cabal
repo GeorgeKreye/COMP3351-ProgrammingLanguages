@@ -25,6 +25,7 @@ source-repository head
 
 library
   exposed-modules:
+      DailyFour
       DailyOne
       DailyThree
       DailyTwo
@@ -105,6 +106,7 @@ test-suite DailyHaskell-test
   type: exitcode-stdio-1.0
   main-is: Spec.hs
   other-modules:
+      DailyFourSpec
       DailyOneSpec
       DailyThreeSpec
       DailyTwoSpec
