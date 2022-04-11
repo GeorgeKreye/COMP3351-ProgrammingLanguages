@@ -18,3 +18,6 @@ module DailyFourSpec where
         describe "mergeSorted3" $ do
             it "produces the list [-1, 0, 1, 2, 3, 4, 5, 8, 10]" $
                 mergeSorted3 [2, 3, 5] [1, 8] [-1, 0, 4, 10] `shouldBe`[-1, 0, 1, 2, 3, 4, 5, 8, 10]
+            it "produces the list []" $
+                mergeSorted3 [11,12,13,19] [5,19,21,31,32,33,43,48] [17,22,45,57,59,64] `shouldBe` [5,11,12,13,17,19,19,21,22,31,32,33,43,45,48,57,59,64]
+
