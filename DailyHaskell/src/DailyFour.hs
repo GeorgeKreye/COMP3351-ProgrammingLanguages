@@ -32,4 +32,12 @@ module DailyFour where
     thirdValues :: [(a,b,c)] -> [c]
     thirdValues [] = []
     thirdValues t = getThirdTriple (head t) : thirdValues (tail t)
-    
+    {- 
+        Takes 3 sorted lists and merges them in sorted order, returning
+        the result.
+    -}
+    mergeSorted3 :: Ord a => [a] -> [a] -> [a] -> [a]
+    mergeSorted3 [] [] [] = []
+    mergeSorted3 a [] [] = a
+    mergeSorted3 [] b [] = b
+    mergeSorted3 [] [] c = c
