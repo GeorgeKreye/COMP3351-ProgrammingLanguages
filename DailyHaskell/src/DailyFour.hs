@@ -41,3 +41,37 @@ module DailyFour where
     mergeSorted3 a [] [] = a
     mergeSorted3 [] b [] = b
     mergeSorted3 [] [] c = c
+    mergeSorted3 a b [] = 
+        if m == head a 
+            then head a : mergeSorted3 (tail a) b []
+            else head b : mergeSorted3 a (tail b) []
+        where 
+            m = compareSorted2 (head a) (head b)
+    mergeSorted3 a [] c =
+        if m == head a
+            then head a : mergeSorted3 (tail a) [] c
+            else head c : mergeSorted3 a [] (tail c)
+        where
+            m = compareSorted2 (head a) (head c)
+    mergeSorted3 [] b c =
+        if m == head b
+            then head b : mergeSorted3 [] (tail b) c
+            else head c : mergeSorted3 [] b (tail c)
+        where m = compareSorted2 (head b) (head c)
+    mergeSorted3 a b c
+      | m == head a = head a : mergeSorted3 (tail a) b c
+      | m == head b = head b : mergeSorted3 a (tail b) c
+      | otherwise = head c : mergeSorted3 a b (tail c)
+      where
+          m = compareSorted3 (head a) (head b) (head c)
+    --utility functions for mergeSorted3
+    compareSorted2 :: Ord p => p -> p -> p
+    compareSorted2 a b =
+        if a < b
+            then a
+            else b
+    compareSorted3 :: Ord a => a -> a -> a -> a
+    compareSorted3 a b c
+      | a < b && a < c = a
+      | b < a && b < c = b
+      | otherwise = c
