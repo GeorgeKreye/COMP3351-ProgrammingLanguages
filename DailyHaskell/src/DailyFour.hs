@@ -25,53 +25,50 @@ module DailyFour where
     getThirdTriple (_,_,c) = c
     firstValues :: [(a, b, c)] -> [a]
     firstValues [] = []
-    firstValues t = getFirstTriple (head t) : firstValues (tail t)
+    firstValues (t:ts) = getFirstTriple t : firstValues ts
     secondValues :: [(a, b, c)] -> [b]
     secondValues [] = []
-    secondValues t = getSecondTriple (head t) : secondValues (tail t)
+    secondValues (t:ts) = getSecondTriple t : secondValues ts
     thirdValues :: [(a,b,c)] -> [c]
     thirdValues [] = []
-    thirdValues t = getThirdTriple (head t) : thirdValues (tail t)
+    thirdValues (t:ts) = getThirdTriple t : thirdValues ts
     {- 
         Takes 3 sorted lists and merges them in sorted order, returning
         the result.
     -}
     mergeSorted3 :: Ord a => [a] -> [a] -> [a] -> [a]
     mergeSorted3 [] [] [] = []
-    mergeSorted3 a [] [] = a
-    mergeSorted3 [] b [] = b
-    mergeSorted3 [] [] c = c
-    mergeSorted3 a b [] = 
-        if m == head a 
+    mergeSorted3 (a:as) [] [] = a : mergeSorted3 as [] []
+    mergeSorted3 [] (b:bs) [] = b : mergeSorted3 [] bs []
+    mergeSorted3 [] [] (c:cs) = c : mergeSorted3 [] [] cs
+    mergeSorted3 a b [] =
+        if m == head a
             then head a : mergeSorted3 (tail a) b []
             else head b : mergeSorted3 a (tail b) []
-        where 
-            m = compareSorted2 (head a) (head b)
-    mergeSorted3 a [] c =
+        where m = minHead2 a b
+    mergeSorted3 a [] c = 
         if m == head a
             then head a : mergeSorted3 (tail a) [] c
             else head c : mergeSorted3 a [] (tail c)
-        where
-            m = compareSorted2 (head a) (head c)
+        where m = minHead2 a c
     mergeSorted3 [] b c =
         if m == head b
             then head b : mergeSorted3 [] (tail b) c
             else head c : mergeSorted3 [] b (tail c)
-        where m = compareSorted2 (head b) (head c)
+        where m = minHead2 b c
     mergeSorted3 a b c
       | m == head a = head a : mergeSorted3 (tail a) b c
       | m == head b = head b : mergeSorted3 a (tail b) c
       | otherwise = head c : mergeSorted3 a b (tail c)
-      where
-          m = compareSorted3 (head a) (head b) (head c)
+      where m = minHead3 a b c
     --utility functions for mergeSorted3
-    compareSorted2 :: Ord p => p -> p -> p
-    compareSorted2 a b =
-        if a < b
-            then a
-            else b
-    compareSorted3 :: Ord a => a -> a -> a -> a
-    compareSorted3 a b c
-      | a < b && a < c = a
-      | b < a && b < c = b
-      | otherwise = c
+    minHead2 :: Ord a => [a] -> [a] -> a
+    minHead2 x y =
+        if head x <= head y
+            then head x
+            else head y
+    minHead3 :: Ord a => [a] -> [a] -> [a] -> a
+    minHead3 a b c
+      | head a <= head b && head a <= head c = head a
+      | head b < head a && head b < head c = head b
+      | otherwise = head c
