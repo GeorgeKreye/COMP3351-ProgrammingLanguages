@@ -12,3 +12,10 @@ module WeeklyHaskellOneSpec where
                 removeChar 's' "Seas" `shouldBe` "Sea"
             it "produces the string \"car\"" $
                 removeChar 't' "catr" `shouldBe` "car"
+        describe "removeWhitespace" $ do
+            it "produces the string \"nosun\"" $
+                removeWhitespace "no sun\n" `shouldBe` "nosun"
+            it "produces the string \"carsandruckes\"" $
+                removeWhitespace "cars and\trucke\rs" `shouldBe` "carsandruckes"
+            it "produces the string \"\"" $
+                removeWhitespace "\n \t \r" `shouldBe` ""
