@@ -1,5 +1,5 @@
-name:                DailyHaskell
-version:             0.1.0.0
+name:                Code
+version:             0.4.0.0
 github:              "githubuser/DailyHaskell"
 license:             BSD3
 author:              "Author name here"
@@ -27,7 +27,7 @@ library:
   source-dirs: src
 
 executables:
-  DailyHaskell-exe:
+  Code-exe:
     main:                Main.hs
     source-dirs:         app
     ghc-options:
@@ -41,10 +41,10 @@ executables:
     - -Wincomplete-uni-patterns
     - -Wredundant-constraints
     dependencies:
-    - DailyHaskell
+    - Code
 
 tests:
-  DailyHaskell-test:
+  Code-test:
     main:                Spec.hs
     source-dirs:         test
     ghc-options:
@@ -59,7 +59,7 @@ tests:
     - -Wredundant-constraints
     - -with-rtsopts=-N
     dependencies:
-    - DailyHaskell
+    - Code
 
 default-extensions:
 -  EmptyCase
