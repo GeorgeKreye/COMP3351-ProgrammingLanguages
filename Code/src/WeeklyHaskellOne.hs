@@ -21,3 +21,11 @@ module WeeklyHaskellOne where
     removePunctuation :: [Char] -> [Char]
     removePunctuation s = 
         removeChar '.' (removeChar '!' (removeChar ',' (removeChar '?' (removeChar ':' (removeChar ';' (removeChar '(' (removeChar ')' s)))))))
+    {- 
+        Converts a string to a list of integers representing the ASCII
+        values of the characters that compose it
+    -}
+    charsToAscii :: Enum a => [a] -> [Int]
+    charsToAscii [] = []
+    charsToAscii s = fromEnum (head s) : charsToAscii(tail s)
+    {- -}
