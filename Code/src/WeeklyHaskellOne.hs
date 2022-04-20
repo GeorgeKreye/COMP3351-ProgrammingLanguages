@@ -14,3 +14,10 @@ module WeeklyHaskellOne where
     -}
     removeWhitespace :: [Char] -> [Char]
     removeWhitespace s = removeChar ' ' (removeChar '\t' (removeChar '\n' (removeChar '\r' s)))
+    {- 
+        Removes all periods, exclamation points, commas, etc from a given
+        string, returning the result
+    -}
+    removePunctuation :: [Char] -> [Char]
+    removePunctuation s = 
+        removeChar '.' (removeChar '!' (removeChar ',' (removeChar '?' (removeChar ':' (removeChar ';' (removeChar '(' (removeChar ')' s)))))))
