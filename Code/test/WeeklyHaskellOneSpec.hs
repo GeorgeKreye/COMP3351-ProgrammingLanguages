@@ -42,7 +42,7 @@ module WeeklyHaskellOneSpec where
                 asciiToChars [42, 40, 37, 36, 41, 64, 35, 33, 64, 94, 38, 42, 37, 40] `shouldBe` "*(%$)@#!@^&*%("
         describe "shiftInts" $ do
             it "produces the list [2,3,4]" $
-                shiftInts 1 [1,2,3,1277] `shouldBe` [2,3,4,0]
+                shiftInts 1 [1,2,3,127] `shouldBe` [2,3,4,0]
             it "produces the list []" $
                 shiftInts 2 [] `shouldBe` []
             it "produces the list [1,2,3]" $
