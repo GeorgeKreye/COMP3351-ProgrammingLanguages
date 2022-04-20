@@ -19,21 +19,21 @@ module WeeklyHaskellOne where
         string, returning the result
     -}
     removePunctuation :: [Char] -> [Char]
-    removePunctuation s = 
+    removePunctuation s =
         removeChar '.' (removeChar '!' (removeChar ',' (removeChar '?' (removeChar ':' (removeChar ';' (removeChar '(' (removeChar ')' s)))))))
     {- 
         Converts a string to a list of integers representing the ASCII
         values of the characters that compose it
     -}
-    charsToAscii :: Enum a => [a] -> [Int]
-    charsToAscii [] = []
+    charsToAscii :: [Char] -> [Int]
+    charsToAscii "" = []
     charsToAscii s = fromEnum (head s) : charsToAscii(tail s)
     {- 
         Converts a list of ASCII integer values to a string of the
         characters they represent
     -}
-    asciiToChars :: Enum a => [Int] -> [a]
-    asciiToChars [] = []
+    asciiToChars :: [Int] -> [Char]
+    asciiToChars [] = ""
     asciiToChars l = toEnum (head l) : asciiToChars (tail l)
     {- 
         Shifts a list of ASCII integer values by a given value,
