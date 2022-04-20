@@ -36,14 +36,14 @@ module WeeklyHaskellOneSpec where
         describe "asciiToChars" $ do
             it "produces the string \"Hello World\"" $
                 asciiToChars [72, 101, 108, 108, 111, 32, 87, 111, 114, 108, 100] `shouldBe` "Hello World"
-            it "produces the string \"The cake is a lie.\"" $
-                asciiToChars [84, 104, 101, 32, 99, 97, 107, 101, 32, 105, 115, 32, 97, 32, 108, 105, 101, 46] `shouldBe` "The cake is a lie."
+            it "produces the string \"\"" $
+                asciiToChars [] `shouldBe` ""
             it "produces the string \"*(%$)@#!@^&*%(\"" $
                 asciiToChars [42, 40, 37, 36, 41, 64, 35, 33, 64, 94, 38, 42, 37, 40] `shouldBe` "*(%$)@#!@^&*%("
         describe "shiftInts" $ do
             it "produces the list [2,3,4]" $
                 shiftInts 1 [1,2,3] `shouldBe` [2,3,4]
-            it "produces the list [127, 0]" $
-                shiftInts 2 [125, 126] `shouldBe` [127, 0]
+            it "produces the list []" $
+                shiftInts 2 [] `shouldBe` []
             it "produces the list [1,2,3]" $
                 shiftInts 6 [123,124,125] `shouldBe` [1,2,3]
