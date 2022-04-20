@@ -35,3 +35,10 @@ module WeeklyHaskellOne where
     asciiToChars :: Enum a => [Int] -> [a]
     asciiToChars [] = []
     asciiToChars l = toEnum (head l) : asciiToChars (tail l)
+    {- 
+        Shifts a list of ASCII integer values by a given value,
+        going back to 0 if the maximum ASCII value is reached
+    -}
+    shiftInts :: Integral a => a -> [a] -> [a]
+    shiftInts _ [] = []
+    shiftInts v l = ((head l + v) `mod` 128) : shiftInts v (tail l)
