@@ -24,7 +24,7 @@ module WeeklyHaskellOneSpec where
                 removePunctuation "Hello! My name is Joe." `shouldBe` "Hello My name is Joe"
             it "produces the string \"Can I ask a question\"" $
                 removePunctuation "(Can I ask a) question?" `shouldBe` "Can I ask a question"
-            it "produces the string \"\"" $
+            it "produces the string \"Includes pencils paper and an erase\"" $
                 removePunctuation "Includes: pencils, paper, and an eraser" `shouldBe` "Includes pencils paper and an eraser"
         describe "charsToAscii" $ do
             it "produces the list [72, 101, 108, 108, 111, 32, 119, 111, 114, 108, 100]" $
@@ -33,3 +33,10 @@ module WeeklyHaskellOneSpec where
                 charsToAscii "XxProGamer77xX" `shouldBe` [88, 120, 80, 114, 111, 71, 97, 109, 101, 114, 55, 55, 120, 88]
             it "produces the list [82, 97, 100, 105, 99, 97, 108, 33]" $
                 charsToAscii "Radical!" `shouldBe` [82, 97, 100, 105, 99, 97, 108, 33]
+        describe "asciiToChars" $ do
+            it "produces the string \"Hello World\"" $
+                asciiToChars [72, 101, 108, 108, 111, 32, 87, 111, 114, 108, 100] `shouldBe` "Hello World"
+            it "produces the string \"The cake is a lie.\"" $
+                asciiToChars [84, 104, 101, 32, 99, 97, 107, 101, 32, 105, 115, 32, 97, 32, 108, 105, 101, 46] `shouldBe` "The cake is a lie."
+            it "produces the string \"*(%$)@#!@^&*%(\"" $
+                asciiToChars [42, 40, 37, 36, 41, 64, 35, 33, 64, 94, 38, 42, 37, 40] `shouldBe` "*(%$)@#!@^&*%("

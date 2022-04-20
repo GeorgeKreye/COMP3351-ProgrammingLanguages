@@ -28,4 +28,10 @@ module WeeklyHaskellOne where
     charsToAscii :: Enum a => [a] -> [Int]
     charsToAscii [] = []
     charsToAscii s = fromEnum (head s) : charsToAscii(tail s)
-    {- -}
+    {- 
+        Converts a list of ASCII integer values to a string of the
+        characters they represent
+    -}
+    asciiToChars :: Enum a => [Int] -> [a]
+    asciiToChars [] = []
+    asciiToChars l = toEnum (head l) : asciiToChars (tail l)
