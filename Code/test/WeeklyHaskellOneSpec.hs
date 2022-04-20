@@ -24,7 +24,7 @@ module WeeklyHaskellOneSpec where
                 removePunctuation "Hello! My name is Joe." `shouldBe` "Hello My name is Joe"
             it "produces the string \"Can I ask a question\"" $
                 removePunctuation "(Can I ask a) question?" `shouldBe` "Can I ask a question"
-            it "produces the string \"Includes pencils paper and an erase\"" $
+            it "produces the string \"Includes pencils paper and an eraser\"" $
                 removePunctuation "Includes: pencils, paper, and an eraser" `shouldBe` "Includes pencils paper and an eraser"
         describe "charsToAscii" $ do
             it "produces the list [72, 101, 108, 108, 111, 32, 119, 111, 114, 108, 100]" $
