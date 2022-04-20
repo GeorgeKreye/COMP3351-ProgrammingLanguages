@@ -42,3 +42,10 @@ module WeeklyHaskellOne where
     shiftInts :: Integral a => a -> [a] -> [a]
     shiftInts _ [] = []
     shiftInts v l = ((head l + v) `mod` 128) : shiftInts v (tail l)
+    {- 
+        Given a string of characters, shifts the characters using their 
+        ASCII values and returns the resulting string
+    -}
+    shiftMessage :: Int -> [Char] -> [Char]
+    shiftMessage _ "" = ""
+    shiftMessage v s = asciiToChars (shiftInts v (charsToAscii s))

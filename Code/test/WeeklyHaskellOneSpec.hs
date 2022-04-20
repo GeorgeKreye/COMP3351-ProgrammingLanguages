@@ -47,3 +47,10 @@ module WeeklyHaskellOneSpec where
                 shiftInts 2 [] `shouldBe` []
             it "produces the list [1,2,3]" $
                 shiftInts (-122) [123,124,125] `shouldBe` [1,2,3]
+        describe "shiftMessage" $ do
+            it "produces the string \"Mjqq%\\twqi&\"" $
+                shiftMessage 5 "Hello World!" `shouldBe` "Mjqqt%\\twqi&"
+            it "produces the string \"Hello World!\"" $
+                shiftMessage (-5) "Mjqqt%\\twqi&" `shouldBe` "Hello World!"
+            it "produces the string \"\"" $
+                shiftMessage 0 "" `shouldBe` ""
