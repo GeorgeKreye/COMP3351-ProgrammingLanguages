@@ -1,3 +1,5 @@
+{-# OPTIONS_GHC -Wno-unrecognised-pragmas #-}
+{-# HLINT ignore "Use map" #-}
 module DailyFour where
     {- 
         Given 3 lists, creates a list of tuples where each tuple contains
