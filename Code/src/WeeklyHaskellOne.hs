@@ -13,13 +13,15 @@ module WeeklyHaskellOne where
         resulting string
     -}
     removeWhitespace :: [Char] -> [Char]
-    removeWhitespace = removeChar ' ' . removeChar '\t' . removeChar '\n' . removeChar '\r'
+    removeWhitespace "" = ""
+    removeWhitespace s = (removeChar ' ' . removeChar '\t' . removeChar '\n' . removeChar '\r') s
     {- 
         Removes all periods, exclamation points, commas, etc from a given
         string, returning the result
     -}
     removePunctuation :: [Char] -> [Char]
-    removePunctuation = removeChar '.' . removeChar '!' . removeChar ',' . removeChar '?' . removeChar ':' . removeChar ';' . removeChar '(' . removeChar ')'
+    removePunctuation "" = ""
+    removePunctuation s = (removeChar '.' . removeChar '!' . removeChar ',' . removeChar '?' . removeChar ':' . removeChar ';' . removeChar '(' . removeChar ')') s
     {- 
         Converts a string to a list of integers representing the ASCII
         values of the characters that compose it
