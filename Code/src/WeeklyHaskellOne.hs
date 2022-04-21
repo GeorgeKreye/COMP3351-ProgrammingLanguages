@@ -13,14 +13,13 @@ module WeeklyHaskellOne where
         resulting string
     -}
     removeWhitespace :: [Char] -> [Char]
-    removeWhitespace s = removeChar ' ' (removeChar '\t' (removeChar '\n' (removeChar '\r' s)))
+    removeWhitespace = removeChar ' ' . removeChar '\t' . removeChar '\n' . removeChar '\r'
     {- 
         Removes all periods, exclamation points, commas, etc from a given
         string, returning the result
     -}
     removePunctuation :: [Char] -> [Char]
-    removePunctuation s =
-        removeChar '.' (removeChar '!' (removeChar ',' (removeChar '?' (removeChar ':' (removeChar ';' (removeChar '(' (removeChar ')' s)))))))
+    removePunctuation = removeChar '.' . removeChar '!' . removeChar ',' . removeChar '?' . removeChar ':' . removeChar ';' . removeChar '(' . removeChar ')'
     {- 
         Converts a string to a list of integers representing the ASCII
         values of the characters that compose it
@@ -48,4 +47,4 @@ module WeeklyHaskellOne where
     -}
     shiftMessage :: Int -> [Char] -> [Char]
     shiftMessage _ "" = ""
-    shiftMessage v s = asciiToChars (shiftInts v (charsToAscii s))
+    shiftMessage v s = (asciiToChars . shiftInts v . charsToAscii) s
