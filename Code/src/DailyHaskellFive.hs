@@ -1,0 +1,1 @@
+module DailyHaskellFive where
