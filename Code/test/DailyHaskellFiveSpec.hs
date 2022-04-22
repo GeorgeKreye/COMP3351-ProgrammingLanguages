@@ -18,3 +18,10 @@ module DailyHaskellFiveSpec where
                 squareList [1,2,3,4] `shouldBe` [(1,1),(2,4),(3,9),(4,16)]
             it "produces the list [(-1,1),(-2,4),(-3,9)]" $
                 squareList [-1,-2,-3] `shouldBe` [(-1,1),(-2,4),(-3,9)]
+        describe "findLowercase" $ do 
+            it "produces the list []" $
+                findLowercase [] `shouldBe` []
+            it "produces the list [False,True,False]" $
+                findLowercase ["Good", "afternoon", "Bob"] `shouldBe` [False,True,False]
+            it "produces the list [False,False,True]" $
+                findLowercase ["@","1","a"] `shouldBe` [False,False,True]
