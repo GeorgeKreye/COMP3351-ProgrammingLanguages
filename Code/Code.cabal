@@ -26,6 +26,7 @@ source-repository head
 library
   exposed-modules:
       DailyFour
+      DailyHaskellFive
       DailyOne
       DailyThree
       DailyTwo
@@ -108,6 +109,7 @@ test-suite Code-test
   main-is: Spec.hs
   other-modules:
       DailyFourSpec
+      DailyHaskellFiveSpec
       DailyOneSpec
       DailyThreeSpec
       DailyTwoSpec
