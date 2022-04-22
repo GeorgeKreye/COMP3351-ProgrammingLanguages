@@ -6,6 +6,7 @@ module TriTree where
     {-
         Given a value and a TriTree, returns a boolean of whether
         the TriTree contains the value
+        TODO: implement
     -}
     search :: Ord v => v -> TriTree t -> Bool
     search v t = False;
