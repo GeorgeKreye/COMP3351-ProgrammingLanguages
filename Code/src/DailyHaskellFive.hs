@@ -20,3 +20,9 @@ module DailyHaskellFive where
     -}
     findLowercase :: [[Char]] -> [Bool]
     findLowercase = map (isLower . head)
+    {- 
+        Given a list of doubles, negates each double, takes the cos
+        and tan of the negation, and returns the result
+    -}
+    negCosTan :: [Double] -> [Double]
+    negCosTan = map (tan . cos . negate)

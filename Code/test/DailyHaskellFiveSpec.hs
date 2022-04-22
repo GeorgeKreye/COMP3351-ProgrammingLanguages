@@ -25,3 +25,8 @@ module DailyHaskellFiveSpec where
                 findLowercase ["Good", "afternoon", "Bob"] `shouldBe` [False,True,False]
             it "produces the list [False,False,True]" $
                 findLowercase ["@","1","a"] `shouldBe` [False,False,True]
+        describe "negCosTan" $ do
+            it "produces the list []" $
+                negCosTan [] `shouldBe` []
+            it "produces the list [0.5998406268185328,-0.4419588738449649,-1.5236518180798269]" $
+                negCosTan [1,2,3] `shouldBe` [0.5998406268185328,-0.4419588738449649,-1.5236518180798269]
