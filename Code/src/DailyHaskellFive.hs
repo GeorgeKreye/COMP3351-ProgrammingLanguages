@@ -7,3 +7,9 @@ module DailyHaskellFive where
     -}
     multPairs :: [(Integer,Integer)] -> [Integer]
     multPairs = map (\(x,y) -> x * y)
+    {- 
+        Given a list of integers, returns a list of pairs consisting of
+        the original integer and its square
+    -}
+    squareList :: [Integer] -> [(Integer, Integer)]
+    squareList = map (\x -> (x, x * x))
