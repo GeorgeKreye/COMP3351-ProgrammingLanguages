@@ -58,4 +58,28 @@ module TriTree where
     treeMap _ Empty = Empty
     treeMap (f :: a -> b) (NodeOne v l m r) = NodeOne (f v) (treeMap f l) (treeMap f m) (treeMap f r)
     treeMap (f :: a -> b) (NodeTwo x y l m r) = NodeTwo (f x) (f y) (treeMap f l) (treeMap f m) (treeMap f r)
-
+    {- 
+        Given a function, an initial value, and a TriTree, combines all values of the TriTree using the function in preorder (root value(s) before subtrees)
+        TODO: Get rid of integer requirement
+    -}
+    treeFoldPreOrder :: Num (a -> a) => (a -> a -> a) -> a -> TriTree a -> a -> a
+    treeFoldPreOrder (f :: a -> a -> a) v Empty = f v
+    treeFoldPreOrder (f :: a -> a -> a) v (NodeOne x l m r) = f x + treeFoldPreOrder f v l + treeFoldPreOrder f v m + treeFoldPreOrder f v r
+    treeFoldPreOrder (f :: a -> a -> a) v (NodeTwo x y l m r) = f x + f y + treeFoldPreOrder f v l + treeFoldPreOrder f v m + treeFoldPreOrder f v r
+    {- 
+        Given a function, an initial value, and a TriTree, combines all values of the TriTree using the function in order (left subtree, lesser root value,
+        middle subtree, etc.)
+        TODO: Get rid of integer requirement
+    -}
+    treeFoldInOrder :: Num (a -> a) => (a -> a -> a) -> a -> TriTree a -> a -> a
+    treeFoldInOrder (f :: a -> a -> a) v Empty = f v
+    treeFoldInOrder (f :: a -> a -> a) v (NodeOne x l m r) = treeFoldInOrder f v l + f x + treeFoldInOrder f v m + treeFoldInOrder f v r
+    treeFoldInOrder (f :: a -> a -> a) v (NodeTwo x y l m r) = treeFoldInOrder f v l + f x + treeFoldInOrder f v m + f y + treeFoldInOrder f v r
+    {- 
+        Given a function, an initial value, and a TriTree, combines all values of the TriTree using the function in postorder (subtrees before root
+        value(s))
+    -}
+    treeFoldPostOrder :: Num (a -> a) => (a -> a -> a) -> a -> TriTree a -> a -> a
+    treeFoldPostOrder (f :: a -> a -> a) v Empty = f v
+    treeFoldPostOrder (f :: a -> a -> a) v (NodeOne x l m r) = treeFoldPostOrder f v l + treeFoldPostOrder f v m + treeFoldPostOrder f v r + f x
+    treeFoldPostOrder (f :: a -> a -> a) v (NodeTwo x y l m r) = treeFoldPostOrder f v l + treeFoldPostOrder f v m + treeFoldPostOrder f v r + f x + f y
