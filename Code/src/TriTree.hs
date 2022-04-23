@@ -1,3 +1,5 @@
+{-# OPTIONS_GHC -Wno-unrecognised-pragmas #-}
+{-# HLINT ignore "Use foldl" #-}
 module TriTree where
     data TriTree a = Empty |
         NodeOne a (TriTree a) (TriTree a) (TriTree a) |
@@ -27,3 +29,9 @@ module TriTree where
       | v < x = NodeTwo x y (insert v l) m r
       | v >= x && v < y = NodeTwo x y l (insert v m) r
       | otherwise = NodeTwo x y l m (insert v r)
+    {- 
+        Given a list of values and a TriTree, inserts the values as new NodeOnes in the proper order
+    -}
+    insertList :: Ord a => [a] -> TriTree a -> TriTree a
+    insertList [] t = t
+    insertList (x:xs) t = insertList xs (insert x t)
