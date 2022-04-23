@@ -1,4 +1,6 @@
 {-# OPTIONS_GHC -Wno-type-defaults #-}
+{-# OPTIONS_GHC -Wno-unrecognised-pragmas #-}
+{-# HLINT ignore "Avoid lambda using `infix`" #-}
 module TriTreeSpec where
     import Test.Hspec
     import TriTree
@@ -29,3 +31,11 @@ module TriTreeSpec where
             it "produces the boolean True" $
                 identical Empty Empty `shouldBe` True
             Need to find why -}
+        {- Currently doesn't work:
+        describe "treeMap" $ do
+            
+            it "produces the TriTree []" $
+                treeMap (\x -> x + 1) Empty `shouldBe` Empty
+            it "produces the TriTree [3(2()2 4()4)]" $
+                treeMap (\x -> x + 1) (NodeOne 2 (NodeOne 1 Empty Empty Empty) (NodeOne 3 Empty Empty Empty) Empty) `shouldBe` NodeOne 3 (NodeOne 2 Empty Empty Empty) (NodeOne 3 Empty Empty Empty) Empty
+        Need to find why -}

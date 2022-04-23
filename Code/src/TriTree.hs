@@ -17,10 +17,10 @@ module TriTree where
         (x == v || y == v) || (search v l || search v m || search v r)
     {- 
         Given a value and a TriTree, inserts the value as new NodeOne leaf in the proper order
-        TODO: Fix error
+        TODO: Fix error that prevents compiling
     -}
     insert :: Ord a => a -> TriTree a -> TriTree a
-    insert v Empty = NodeOne v Empty Empty Empty
+    insert v Empty = NodeOne v Empty Empty Empty -- might be source
     insert v (NodeOne x l m r) =
         if v < x
             then NodeOne x (insert v l) m r
@@ -31,16 +31,17 @@ module TriTree where
       | otherwise = NodeTwo x y l m (insert v r)
     {- 
         Given a list of values and a TriTree, inserts the values as new NodeOnes in the proper order
-        TODO: Fix error in insertList
+        TODO: Fix error in insertList that prevents compiling
     -}
     insertList :: Ord a => [a] -> TriTree a -> TriTree a
     insertList [] t = t
     insertList (x:xs) t = insertList xs (insert x t)
     {- 
         Given two TriTrees, returns True if they are identical and False if not
+        TODO: Fix error that prevents compiling when both trees are empty 
     -}
     identical :: Eq a => TriTree a -> TriTree a -> Bool
-    identical Empty Empty = True
+    identical Empty Empty = True -- doesn't work when starting with empty trees for some reason
     identical NodeOne {} Empty = False
     identical Empty NodeOne {} = False
     identical NodeTwo {} Empty = False
@@ -49,3 +50,12 @@ module TriTree where
     identical NodeTwo {} NodeOne {} = False
     identical (NodeOne x a b c) (NodeOne y d e f) = x == y && identical a d && identical b e && identical c f
     identical (NodeTwo x y a b c) (NodeTwo w z d e f) = x == w && y == z && identical a d && identical b e && identical c f
+    {- 
+        Given a function and a TriTree, maps that function to create a new TriTree
+        TODO: Fix error that prevents compiling
+    -}
+    treeMap :: (a -> b) -> TriTree a -> TriTree b
+    treeMap _ Empty = Empty
+    treeMap (f :: a -> b) (NodeOne v l m r) = NodeOne (f v) (treeMap f l) (treeMap f m) (treeMap f r)
+    treeMap (f :: a -> b) (NodeTwo x y l m r) = NodeTwo (f x) (f y) (treeMap f l) (treeMap f m) (treeMap f r)
+
