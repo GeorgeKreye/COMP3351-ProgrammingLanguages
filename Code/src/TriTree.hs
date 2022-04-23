@@ -31,7 +31,21 @@ module TriTree where
       | otherwise = NodeTwo x y l m (insert v r)
     {- 
         Given a list of values and a TriTree, inserts the values as new NodeOnes in the proper order
+        TODO: Fix error in insertList
     -}
     insertList :: Ord a => [a] -> TriTree a -> TriTree a
     insertList [] t = t
     insertList (x:xs) t = insertList xs (insert x t)
+    {- 
+        Given two TriTrees, returns True if they are identical and False if not
+    -}
+    identical :: Eq a => TriTree a -> TriTree a -> Bool
+    identical Empty Empty = True
+    identical NodeOne {} Empty = False
+    identical Empty NodeOne {} = False
+    identical NodeTwo {} Empty = False
+    identical Empty NodeTwo {} = False
+    identical NodeOne {} NodeTwo {} = False
+    identical NodeTwo {} NodeOne {} = False
+    identical (NodeOne x a b c) (NodeOne y d e f) = x == y && identical a d && identical b e && identical c f
+    identical (NodeTwo x y a b c) (NodeTwo w z d e f) = x == w && y == z && identical a d && identical b e && identical c f
