@@ -33,9 +33,19 @@ module TriTreeSpec where
             Need to find why -}
         {- Currently doesn't work:
         describe "treeMap" $ do
-            
             it "produces the TriTree []" $
                 treeMap (\x -> x + 1) Empty `shouldBe` Empty
             it "produces the TriTree [3(2()2 4()4)]" $
                 treeMap (\x -> x + 1) (NodeOne 2 (NodeOne 1 Empty Empty Empty) (NodeOne 3 Empty Empty Empty) Empty) `shouldBe` NodeOne 3 (NodeOne 2 Empty Empty Empty) (NodeOne 3 Empty Empty Empty) Empty
         Need to find why -}
+        {- Need to find a function that works for testing these:
+        describe "treeFoldPreOrder" $ do
+            it "" $
+                treeFoldPreOrder (\x -> x + 1) 0 Empty `shouldBe` 1
+        describe "treeFoldInOrder" $ do
+            it "" $
+                treeFoldInOrder (\x -> x + 1) 0 Empty `shouldBe` 1
+        describe "treeFoldPostOrder" $ do
+            it "" $ 
+                treeFoldPostOrder (\x -> x + 1) 0 Empty `shouldBe` 1
+        -}
