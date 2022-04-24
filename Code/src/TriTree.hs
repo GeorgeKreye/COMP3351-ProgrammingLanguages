@@ -1,6 +1,7 @@
 {-# OPTIONS_GHC -Wno-unrecognised-pragmas #-}
 {-# HLINT ignore "Use foldl" #-}
 module TriTree where
+    -- Hopefully error(s) isn't/aren't in here or that's a fundamental issue
     data TriTree a = Empty |
         NodeOne a (TriTree a) (TriTree a) (TriTree a) |
         NodeTwo a a (TriTree a) (TriTree a) (TriTree a)
