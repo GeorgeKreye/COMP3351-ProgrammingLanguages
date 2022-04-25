@@ -57,9 +57,12 @@ module TriTree where
     treeMap (f :: a -> b) (NodeTwo x y l m r) = NodeTwo (f x) (f y) (treeMap f l) (treeMap f m) (treeMap f r)
     {- 
         Given a function, an initial value, and a TriTree, combines all values of the TriTree using the function in preorder (root value(s) before subtrees)
+        TODO: actual implementation
     -}
-    treeFoldPreOrder :: (a -> b -> b) -> b -> TriTree a -> b
+    treeFoldPreOrder :: (a -> a -> a) -> a -> TriTree a -> a
     treeFoldPreOrder _ v Empty = v
+    treeFoldPreOrder f v (NodeOne x l m r) = f x (treeFoldPreOrder f v l)
+    treeFoldPreOrder f v (NodeTwo x y l m r) = f x (treeFoldPreOrder f v l)
     {- 
         Given a function, an initial value, and a TriTree, combines all values of the TriTree using the function in order (left subtree, lesser root value,
         middle subtree, etc.)
