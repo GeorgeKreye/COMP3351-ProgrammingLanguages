@@ -5,7 +5,7 @@ module TriTree where
     data TriTree a = Empty |
         NodeOne a (TriTree a) (TriTree a) (TriTree a) |
         NodeTwo a a (TriTree a) (TriTree a) (TriTree a)
-        deriving (Show)
+        deriving (Show, Eq)
     {-
         Given a value and a TriTree, returns a boolean of whether
         the TriTree contains the value
@@ -57,27 +57,23 @@ module TriTree where
     treeMap (f :: a -> b) (NodeTwo x y l m r) = NodeTwo (f x) (f y) (treeMap f l) (treeMap f m) (treeMap f r)
     {- 
         Given a function, an initial value, and a TriTree, combines all values of the TriTree using the function in preorder (root value(s) before subtrees)
-        TODO: Get rid of Num requirement
     -}
-    treeFoldPreOrder :: Num (a -> a) => (a -> a -> a) -> a -> TriTree a -> a -> a
-    treeFoldPreOrder (f :: a -> a -> a) v Empty = f v
-    treeFoldPreOrder (f :: a -> a -> a) v (NodeOne x l m r) = f x + treeFoldPreOrder f v l + treeFoldPreOrder f v m + treeFoldPreOrder f v r
-    treeFoldPreOrder (f :: a -> a -> a) v (NodeTwo x y l m r) = f x + f y + treeFoldPreOrder f v l + treeFoldPreOrder f v m + treeFoldPreOrder f v r
+    treeFoldPreOrder :: (a -> b -> b) -> b -> TriTree a -> b
+    treeFoldPreOrder _ v Empty = v
     {- 
         Given a function, an initial value, and a TriTree, combines all values of the TriTree using the function in order (left subtree, lesser root value,
         middle subtree, etc.)
-        TODO: Get rid of Num requirement
     -}
-    treeFoldInOrder :: Num (a -> a) => (a -> a -> a) -> a -> TriTree a -> a -> a
-    treeFoldInOrder (f :: a -> a -> a) v Empty = f v
-    treeFoldInOrder (f :: a -> a -> a) v (NodeOne x l m r) = treeFoldInOrder f v l + f x + treeFoldInOrder f v m + treeFoldInOrder f v r
-    treeFoldInOrder (f :: a -> a -> a) v (NodeTwo x y l m r) = treeFoldInOrder f v l + f x + treeFoldInOrder f v m + f y + treeFoldInOrder f v r
+    treeFoldInOrder :: (a -> b -> b) -> b -> TriTree a -> b
+    treeFoldInOrder _ v Empty = v
     {- 
         Given a function, an initial value, and a TriTree, combines all values of the TriTree using the function in postorder (subtrees before root
         value(s))
-        TODO: get rid of Num requirement
     -}
-    treeFoldPostOrder :: Num (a -> a) => (a -> a -> a) -> a -> TriTree a -> a -> a
-    treeFoldPostOrder (f :: a -> a -> a) v Empty = f v
-    treeFoldPostOrder (f :: a -> a -> a) v (NodeOne x l m r) = treeFoldPostOrder f v l + treeFoldPostOrder f v m + treeFoldPostOrder f v r + f x
-    treeFoldPostOrder (f :: a -> a -> a) v (NodeTwo x y l m r) = treeFoldPostOrder f v l + treeFoldPostOrder f v m + treeFoldPostOrder f v r + f x + f y
+    treeFoldPostOrder:: (a -> b -> b) -> b -> TriTree a -> b
+    treeFoldPostOrder _ v Empty = v
+
+    {- 
+        CREDIT
+        type definitions for treeFold* functions taken and modified from https://stackoverflow.com/questions/39180630/fold-tree-function
+    -}
