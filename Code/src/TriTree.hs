@@ -20,7 +20,7 @@ module TriTree where
         Given a value and a TriTree, inserts the value as new NodeOne leaf in the proper order
     -}
     insert :: Ord a => a -> TriTree a -> TriTree a
-    insert v Empty = NodeOne v Empty Empty Empty -- might be source
+    insert v Empty = NodeOne v Empty Empty Empty
     insert v (NodeOne x l m r) =
         if v < x
             then NodeOne x (insert v l) m r
