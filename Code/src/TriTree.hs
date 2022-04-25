@@ -77,7 +77,7 @@ module TriTree where
         value(s))
         TODO: actual implementation
     -}
-    treeFoldPostOrder:: (a -> b -> b) -> b -> TriTree a -> b
+    treeFoldPostOrder:: (a -> a -> a) -> a -> TriTree a -> a
     treeFoldPostOrder _ v Empty = v
     treeFoldPostOrder f v (NodeOne x l m r) = v
     treeFoldPostOrder f v (NodeTwo x y l m r) = v

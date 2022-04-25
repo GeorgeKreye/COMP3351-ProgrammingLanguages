@@ -18,7 +18,7 @@ module TriTreeSpec where
             it "produces the TriTree [1()1]" $
                 insert (1 :: Int) Empty `shouldBe` NodeOne (1 :: Int) Empty Empty Empty
             it "produces the TriTree [2(1()1 3()3)2]" $
-                insert 1 (NodeOne 2 Empty (NodeOne 3 Empty Empty Empty) Empty) `shouldBe ` NodeOne 2 (NodeOne 1 Empty Empty Empty) (NodeOne 3 Empty Empty Empty) Empty
+                insert 1 (NodeOne 2 Empty (NodeOne 3 Empty Empty Empty) Empty) `shouldBe` NodeOne 2 (NodeOne 1 Empty Empty Empty) (NodeOne 3 Empty Empty Empty) Empty
         describe "insertList" $ do
             it "produces the TriTree []" $
                 insertList [5,10,20] (NodeOne 13 (NodeOne 7 Empty Empty Empty) (NodeOne 16 Empty Empty Empty) Empty) `shouldBe` NodeOne 13 (NodeOne 7 (NodeOne 5 Empty Empty Empty) (NodeOne 10 Empty Empty Empty) Empty) (NodeOne 16 (NodeOne 20 Empty Empty Empty) Empty Empty) Empty
@@ -37,11 +37,11 @@ module TriTreeSpec where
         {- Need to find a function that works for testing these:
         describe "treeFoldPreOrder" $ do
             it "" $
-                treeFoldPreOrder (\x -> x + 1) 0 Empty `shouldBe` 1
+                treeFoldPreOrder (\a -> a -> a) 0 Empty `shouldBe` 1
         describe "treeFoldInOrder" $ do
             it "" $
-                treeFoldInOrder (\x -> x + 1) 0 Empty `shouldBe` 1
+                treeFoldInOrder (\a -> a -> a) 0 Empty `shouldBe` 1
         describe "treeFoldPostOrder" $ do
             it "" $ 
-                treeFoldPostOrder (\x -> x + 1) 0 Empty `shouldBe` 1
+                treeFoldPostOrder (\a -> a -> a) 0 Empty `shouldBe` 1
         -}
