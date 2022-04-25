@@ -61,22 +61,28 @@ module TriTree where
     -}
     treeFoldPreOrder :: (a -> a -> a) -> a -> TriTree a -> a
     treeFoldPreOrder _ v Empty = v
-    treeFoldPreOrder f v (NodeOne x l m r) = f x (treeFoldPreOrder f v l)
-    treeFoldPreOrder f v (NodeTwo x y l m r) = f x (treeFoldPreOrder f v l)
+    treeFoldPreOrder f v (NodeOne x l m r) = v
+    treeFoldPreOrder f v (NodeTwo x y l m r) = v
     {- 
         Given a function, an initial value, and a TriTree, combines all values of the TriTree using the function in order (left subtree, lesser root value,
         middle subtree, etc.)
+        TODO: actual implementation
     -}
-    treeFoldInOrder :: (a -> b -> b) -> b -> TriTree a -> b
+    treeFoldInOrder :: (a -> a -> a) -> a -> TriTree a -> a
     treeFoldInOrder _ v Empty = v
+    treeFoldInOrder f v (NodeOne x l m r) = v
+    treeFoldInOrder f v (NodeTwo x y l m r) = v
     {- 
         Given a function, an initial value, and a TriTree, combines all values of the TriTree using the function in postorder (subtrees before root
         value(s))
+        TODO: actual implementation
     -}
     treeFoldPostOrder:: (a -> b -> b) -> b -> TriTree a -> b
     treeFoldPostOrder _ v Empty = v
+    treeFoldPostOrder f v (NodeOne x l m r) = v
+    treeFoldPostOrder f v (NodeTwo x y l m r) = v
 
     {- 
         CREDIT
-        type definitions for treeFold* functions taken and modified from https://stackoverflow.com/questions/39180630/fold-tree-function
+        types and Empty cases for treeFold* functions taken and modified from https://stackoverflow.com/questions/39180630/fold-tree-function
     -}
