@@ -44,6 +44,10 @@ module TriTreeSpec where
         describe "treeFoldInOrder" $ do
             it "produces the integer 0" $
                 treeFoldInOrder (+) 0 (Empty :: TriTree Int) `shouldBe` 0
+            it "produces the list [2,3,4,5,6,7,8]" $
+                treeFoldInOrder (++) [] (NodeTwo [3] [7] (NodeOne [2] Empty Empty Empty) (NodeOne [5] (NodeOne [4] Empty Empty Empty) (NodeOne [6] Empty Empty Empty) Empty) (NodeOne [8] Empty Empty Empty)) `shouldBe` [2,3,4,5,6,7,8]
         describe "treeFoldPostOrder" $ do
             it "produces the integer 0" $
                 treeFoldPostOrder (+) 0 (Empty :: TriTree Int) `shouldBe` 0
+            it "produces the list [2,4,6,5,8,3,7]" $
+                treeFoldPostOrder (++) [] (NodeTwo [3] [7] (NodeOne [2] Empty Empty Empty) (NodeOne [5] (NodeOne [4] Empty Empty Empty) (NodeOne [6] Empty Empty Empty) Empty) (NodeOne [8] Empty Empty Empty)) `shouldBe` [2,4,6,5,8,3,7]
