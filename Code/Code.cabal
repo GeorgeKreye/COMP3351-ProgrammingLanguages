@@ -31,6 +31,7 @@ library
       DailyThree
       DailyTwo
       Lib
+      TriTree
       WeeklyHaskellOne
   other-modules:
       Paths_Code
@@ -113,6 +114,7 @@ test-suite Code-test
       DailyOneSpec
       DailyThreeSpec
       DailyTwoSpec
+      TriTreeSpec
       WeeklyHaskellOneSpec
       Paths_Code
   hs-source-dirs:
