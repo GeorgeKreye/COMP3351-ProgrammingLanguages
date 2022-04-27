@@ -21,7 +21,7 @@ module TriTreeSpec where
                 insert 1 (NodeOne 2 Empty (NodeOne 3 Empty Empty Empty) Empty) `shouldBe` NodeOne 2 (NodeOne 1 Empty Empty Empty) (NodeOne 3 Empty Empty Empty) Empty
         describe "insertList" $ do
             it "produces the TriTree []" $
-                insertList [5,10,20] (NodeOne 13 (NodeOne 7 Empty Empty Empty) (NodeOne 16 Empty Empty Empty) Empty) `shouldBe` NodeOne 13 (NodeOne 7 (NodeOne 5 Empty Empty Empty) (NodeOne 10 Empty Empty Empty) Empty) (NodeOne 16 (NodeOne 20 Empty Empty Empty) Empty Empty) Empty
+                insertList [5,10,20] (NodeOne 13 (NodeOne 7 Empty Empty Empty) (NodeOne 16 Empty Empty Empty) Empty) `shouldBe` NodeOne 13 (NodeOne 7 (NodeOne 5 Empty Empty Empty) (NodeOne 10 Empty Empty Empty) Empty) (NodeOne 16 Empty (NodeOne 20 Empty Empty Empty) Empty) Empty
         describe "identical" $ do
             it "produces the boolean False" $
                 identical Empty (NodeOne 3 Empty Empty Empty) `shouldBe` False
@@ -42,4 +42,4 @@ module TriTreeSpec where
                 treeFoldInOrder (+) 0 (Empty :: TriTree Int) `shouldBe` 0
         describe "treeFoldPostOrder" $ do
             it "produces the integer 0" $ 
-                treeFoldPostOrder (+) 0 Empty `shouldBe` 0
+                treeFoldPostOrder (+) 0 (Empty :: TriTree Int) `shouldBe` 0
