@@ -20,8 +20,10 @@ module TriTreeSpec where
             it "produces the TriTree [2(1()1 3()3)2]" $
                 insert 1 (NodeOne 2 Empty (NodeOne 3 Empty Empty Empty) Empty) `shouldBe` NodeOne 2 (NodeOne 1 Empty Empty Empty) (NodeOne 3 Empty Empty Empty) Empty
         describe "insertList" $ do
-            it "produces the TriTree [13(7(5()5) 10()10 7) 16(20()20)16)13]" $
-                insertList [5,10,20] (NodeOne 13 (NodeOne 7 Empty Empty Empty) (NodeOne 16 Empty Empty Empty) Empty) `shouldBe` NodeOne 13 (NodeOne 7 (NodeOne 5 Empty Empty Empty) (NodeOne 10 Empty Empty Empty) Empty) (NodeOne 16 Empty (NodeOne 20 Empty Empty Empty) Empty) Empty
+            it "produces the TriTree [13(5-7(10)5-7) (NodeTwo 16 20 Empty Empty Empty) Empty)" $
+                insertList [5,10,20] (NodeOne 13 (NodeOne 7 Empty Empty Empty) (NodeOne 16 Empty Empty Empty) Empty) `shouldBe` NodeOne 13 (NodeTwo 5 7 Empty Empty (NodeOne 10 Empty Empty Empty)) (NodeTwo 16 20 Empty Empty Empty) Empty
+            it "produces the TriTree []" $
+                insertList [] (Empty :: TriTree Int) `shouldBe` Empty
         describe "identical" $ do
             it "produces the boolean False" $
                 identical Empty (NodeOne 3 Empty Empty Empty) `shouldBe` False
@@ -37,9 +39,13 @@ module TriTreeSpec where
         describe "treeFoldPreOrder" $ do
             it "produces the integer 0" $
                 treeFoldPreOrder (+) 0 (Empty :: TriTree Int) `shouldBe` 0
+            {- Doesn't compile:
+            it "produces the list [3,7,2,5,4,6,8]" $
+                treeFoldPreOrder (++) [] (NodeTwo 3 7 (NodeOne 2 Empty Empty Empty) (NodeOne 5 (NodeOne 4 Empty Empty Empty) (NodeOne 6 Empty Empty Empty) Empty) (NodeOne 8 Empty Empty Empty)) `shouldBe` [3,7,2,5,4,6,8]
+            -}
         describe "treeFoldInOrder" $ do
             it "produces the integer 0" $
                 treeFoldInOrder (+) 0 (Empty :: TriTree Int) `shouldBe` 0
         describe "treeFoldPostOrder" $ do
-            it "produces the integer 0" $ 
+            it "produces the integer 0" $
                 treeFoldPostOrder (+) 0 (Empty :: TriTree Int) `shouldBe` 0
