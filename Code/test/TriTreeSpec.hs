@@ -14,38 +14,32 @@ module TriTreeSpec where
                 search 5 (NodeOne 2 (NodeTwo 5 9 (NodeOne 7 Empty Empty Empty) (NodeOne 4 Empty Empty Empty) Empty) (NodeOne 3 Empty Empty Empty) Empty) `shouldBe` True
             it "produces the boolean False" $
                 search 80 (NodeOne 2 (NodeTwo 5 9 (NodeOne 7 Empty Empty Empty) (NodeOne 4 Empty Empty Empty) Empty) (NodeOne 3 Empty Empty Empty) Empty) `shouldBe` False
-        {- Currently doesn't compile:
         describe "insert" $ do
+            it "produces the TriTree [1()1]" $
+                insert (1 :: Int) Empty `shouldBe` NodeOne (1 :: Int) Empty Empty Empty
             it "produces the TriTree [2(1()1 3()3)2]" $
-                insert 1 (NodeOne 2 Empty (NodeOne 3 Empty Empty Empty) Empty) `shouldBe ` NodeOne 2 (NodeOne 1 Empty Empty Empty) (NodeOne 3 Empty Empty Empty) Empty
+                insert 1 (NodeOne 2 Empty (NodeOne 3 Empty Empty Empty) Empty) `shouldBe` NodeOne 2 (NodeOne 1 Empty Empty Empty) (NodeOne 3 Empty Empty Empty) Empty
         describe "insertList" $ do
-            it "produces the TriTree []" $
-                insertList [5,10,20] (NodeOne 13 (NodeOne 7 Empty Empty Empty) (NodeOne 16 Empty Empty Empty) Empty) `shouldBe` NodeOne 13 (NodeOne 7 (NodeOne 5 Empty Empty Empty) (NodeOne 10 Empty Empty Empty) Empty) (NodeOne 16 (NodeOne 20 Empty Empty Empty) Empty Empty) Empty
-        Need to find why -}
+            it "produces the TriTree [13(7(5()5) 10()10 7) 16(20()20)16)13]" $
+                insertList [5,10,20] (NodeOne 13 (NodeOne 7 Empty Empty Empty) (NodeOne 16 Empty Empty Empty) Empty) `shouldBe` NodeOne 13 (NodeOne 7 (NodeOne 5 Empty Empty Empty) (NodeOne 10 Empty Empty Empty) Empty) (NodeOne 16 Empty (NodeOne 20 Empty Empty Empty) Empty) Empty
         describe "identical" $ do
             it "produces the boolean False" $
                 identical Empty (NodeOne 3 Empty Empty Empty) `shouldBe` False
             it "produces the boolean True" $
                 identical (NodeOne 3 Empty Empty Empty) (NodeOne 3 Empty Empty Empty) `shouldBe` True
-            {- Currently doesn't compile:
             it "produces the boolean True" $
-                identical Empty Empty `shouldBe` True
-            Need to find why -}
-        {- Currently doesn't compile:
+                identical (Empty :: TriTree Int) (Empty :: TriTree Int) `shouldBe` True
         describe "treeMap" $ do
             it "produces the TriTree []" $
                 treeMap (\x -> x + 1) Empty `shouldBe` Empty
             it "produces the TriTree [3(2()2 4()4)]" $
-                treeMap (\x -> x + 1) (NodeOne 2 (NodeOne 1 Empty Empty Empty) (NodeOne 3 Empty Empty Empty) Empty) `shouldBe` NodeOne 3 (NodeOne 2 Empty Empty Empty) (NodeOne 3 Empty Empty Empty) Empty
-        Need to find why -}
-        {- Need to find a function that works for testing these:
+                treeMap (\x -> x + 1) (NodeOne 2 (NodeOne 1 Empty Empty Empty) (NodeOne 3 Empty Empty Empty) Empty) `shouldBe` NodeOne 3 (NodeOne 2 Empty Empty Empty) (NodeOne 4 Empty Empty Empty) Empty
         describe "treeFoldPreOrder" $ do
-            it "" $
-                treeFoldPreOrder (\x -> x + 1) 0 Empty `shouldBe` 1
+            it "produces the integer 0" $
+                treeFoldPreOrder (+) 0 (Empty :: TriTree Int) `shouldBe` 0
         describe "treeFoldInOrder" $ do
-            it "" $
-                treeFoldInOrder (\x -> x + 1) 0 Empty `shouldBe` 1
+            it "produces the integer 0" $
+                treeFoldInOrder (+) 0 (Empty :: TriTree Int) `shouldBe` 0
         describe "treeFoldPostOrder" $ do
-            it "" $ 
-                treeFoldPostOrder (\x -> x + 1) 0 Empty `shouldBe` 1
-        -}
+            it "produces the integer 0" $ 
+                treeFoldPostOrder (+) 0 (Empty :: TriTree Int) `shouldBe` 0

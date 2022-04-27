@@ -1,10 +1,11 @@
 {-# OPTIONS_GHC -Wno-unrecognised-pragmas #-}
 {-# HLINT ignore "Use foldl" #-}
 module TriTree where
+    -- Hopefully error(s) isn't/aren't in here or that's a fundamental issue
     data TriTree a = Empty |
         NodeOne a (TriTree a) (TriTree a) (TriTree a) |
         NodeTwo a a (TriTree a) (TriTree a) (TriTree a)
-        deriving (Show)
+        deriving (Show, Eq)
     {-
         Given a value and a TriTree, returns a boolean of whether
         the TriTree contains the value
@@ -17,10 +18,9 @@ module TriTree where
         (x == v || y == v) || (search v l || search v m || search v r)
     {- 
         Given a value and a TriTree, inserts the value as new NodeOne leaf in the proper order
-        TODO: Fix error that prevents compiling
     -}
     insert :: Ord a => a -> TriTree a -> TriTree a
-    insert v Empty = NodeOne v Empty Empty Empty -- might be source
+    insert v Empty = NodeOne v Empty Empty Empty
     insert v (NodeOne x l m r) =
         if v < x
             then NodeOne x (insert v l) m r
@@ -31,17 +31,15 @@ module TriTree where
       | otherwise = NodeTwo x y l m (insert v r)
     {- 
         Given a list of values and a TriTree, inserts the values as new NodeOnes in the proper order
-        TODO: Fix error in insertList that prevents compiling
     -}
     insertList :: Ord a => [a] -> TriTree a -> TriTree a
     insertList [] t = t
     insertList (x:xs) t = insertList xs (insert x t)
     {- 
         Given two TriTrees, returns True if they are identical and False if not
-        TODO: Fix error that prevents compiling when both trees are empty 
     -}
     identical :: Eq a => TriTree a -> TriTree a -> Bool
-    identical Empty Empty = True -- doesn't work when starting with empty trees for some reason
+    identical Empty Empty = True
     identical NodeOne {} Empty = False
     identical Empty NodeOne {} = False
     identical NodeTwo {} Empty = False
@@ -52,7 +50,6 @@ module TriTree where
     identical (NodeTwo x y a b c) (NodeTwo w z d e f) = x == w && y == z && identical a d && identical b e && identical c f
     {- 
         Given a function and a TriTree, maps that function to create a new TriTree
-        TODO: Fix error that prevents compiling
     -}
     treeMap :: (a -> b) -> TriTree a -> TriTree b
     treeMap _ Empty = Empty
@@ -60,26 +57,59 @@ module TriTree where
     treeMap (f :: a -> b) (NodeTwo x y l m r) = NodeTwo (f x) (f y) (treeMap f l) (treeMap f m) (treeMap f r)
     {- 
         Given a function, an initial value, and a TriTree, combines all values of the TriTree using the function in preorder (root value(s) before subtrees)
-        TODO: Get rid of integer requirement
     -}
-    treeFoldPreOrder :: Num (a -> a) => (a -> a -> a) -> a -> TriTree a -> a -> a
-    treeFoldPreOrder (f :: a -> a -> a) v Empty = f v
-    treeFoldPreOrder (f :: a -> a -> a) v (NodeOne x l m r) = f x + treeFoldPreOrder f v l + treeFoldPreOrder f v m + treeFoldPreOrder f v r
-    treeFoldPreOrder (f :: a -> a -> a) v (NodeTwo x y l m r) = f x + f y + treeFoldPreOrder f v l + treeFoldPreOrder f v m + treeFoldPreOrder f v r
+    treeFoldPreOrder :: (a -> a -> a) -> a -> TriTree a -> a
+    treeFoldPreOrder _ v Empty = v
+    treeFoldPreOrder f v (NodeOne x l m _) =
+        let y = f v x
+            z = treeFoldPreOrder f y l
+        in
+            treeFoldPreOrder f z m
+    treeFoldPreOrder f v (NodeTwo x y l m r) = 
+        let a = f v x
+            b = f a y
+            c = treeFoldPreOrder f b l
+            d = treeFoldPreOrder f c m
+        in
+            treeFoldPreOrder f d r
     {- 
         Given a function, an initial value, and a TriTree, combines all values of the TriTree using the function in order (left subtree, lesser root value,
         middle subtree, etc.)
-        TODO: Get rid of integer requirement
     -}
-    treeFoldInOrder :: Num (a -> a) => (a -> a -> a) -> a -> TriTree a -> a -> a
-    treeFoldInOrder (f :: a -> a -> a) v Empty = f v
-    treeFoldInOrder (f :: a -> a -> a) v (NodeOne x l m r) = treeFoldInOrder f v l + f x + treeFoldInOrder f v m + treeFoldInOrder f v r
-    treeFoldInOrder (f :: a -> a -> a) v (NodeTwo x y l m r) = treeFoldInOrder f v l + f x + treeFoldInOrder f v m + f y + treeFoldInOrder f v r
+    treeFoldInOrder :: (a -> a -> a) -> a -> TriTree a -> a
+    treeFoldInOrder _ v Empty = v
+    treeFoldInOrder f v (NodeOne x l m _) = 
+        let y = treeFoldInOrder f v l
+            z = f y x
+        in 
+            treeFoldInOrder f z m
+    treeFoldInOrder f v (NodeTwo x y l m r) = 
+        let a = treeFoldInOrder f v l
+            b = f a x
+            c = treeFoldInOrder f b m
+            d = f c y
+        in
+            treeFoldInOrder f d r
     {- 
         Given a function, an initial value, and a TriTree, combines all values of the TriTree using the function in postorder (subtrees before root
         value(s))
     -}
-    treeFoldPostOrder :: Num (a -> a) => (a -> a -> a) -> a -> TriTree a -> a -> a
-    treeFoldPostOrder (f :: a -> a -> a) v Empty = f v
-    treeFoldPostOrder (f :: a -> a -> a) v (NodeOne x l m r) = treeFoldPostOrder f v l + treeFoldPostOrder f v m + treeFoldPostOrder f v r + f x
-    treeFoldPostOrder (f :: a -> a -> a) v (NodeTwo x y l m r) = treeFoldPostOrder f v l + treeFoldPostOrder f v m + treeFoldPostOrder f v r + f x + f y
+    treeFoldPostOrder :: (a -> a -> a) -> a -> TriTree a -> a
+    treeFoldPostOrder _ v Empty = v
+    treeFoldPostOrder f v (NodeOne x l m _) = 
+        let y = treeFoldPostOrder f v l
+            z = treeFoldPostOrder f y m
+        in
+            f z x
+    treeFoldPostOrder f v (NodeTwo x y l m r) = 
+        let a = treeFoldPostOrder f v l
+            b = treeFoldPostOrder f a m
+            c = treeFoldPostOrder f b r
+            d = f c x
+        in
+            f d y
+
+    {- 
+        CREDIT
+        types and Empty cases for treeFold* functions taken and modified from https://stackoverflow.com/questions/39180630/fold-tree-function
+    -}
