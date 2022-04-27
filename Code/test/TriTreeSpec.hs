@@ -20,7 +20,7 @@ module TriTreeSpec where
             it "produces the TriTree [2(1()1 3()3)2]" $
                 insert 1 (NodeOne 2 Empty (NodeOne 3 Empty Empty Empty) Empty) `shouldBe` NodeOne 2 (NodeOne 1 Empty Empty Empty) (NodeOne 3 Empty Empty Empty) Empty
         describe "insertList" $ do
-            it "produces the TriTree []" $
+            it "produces the TriTree [13(7(5()5) 10()10 7) 16(20()20)16)13]" $
                 insertList [5,10,20] (NodeOne 13 (NodeOne 7 Empty Empty Empty) (NodeOne 16 Empty Empty Empty) Empty) `shouldBe` NodeOne 13 (NodeOne 7 (NodeOne 5 Empty Empty Empty) (NodeOne 10 Empty Empty Empty) Empty) (NodeOne 16 Empty (NodeOne 20 Empty Empty Empty) Empty) Empty
         describe "identical" $ do
             it "produces the boolean False" $
