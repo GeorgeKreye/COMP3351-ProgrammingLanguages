@@ -34,14 +34,12 @@ module TriTreeSpec where
                 treeMap (\x -> x + 1) Empty `shouldBe` Empty
             it "produces the TriTree [3(2()2 4()4)]" $
                 treeMap (\x -> x + 1) (NodeOne 2 (NodeOne 1 Empty Empty Empty) (NodeOne 3 Empty Empty Empty) Empty) `shouldBe` NodeOne 3 (NodeOne 2 Empty Empty Empty) (NodeOne 4 Empty Empty Empty) Empty
-        {- Need to find a function that works for testing these:
         describe "treeFoldPreOrder" $ do
-            it "" $
-                treeFoldPreOrder (\a -> a -> a) 0 Empty `shouldBe` 1
+            it "produces the integer 0" $
+                treeFoldPreOrder (+) 0 (Empty :: TriTree Int) `shouldBe` 0
         describe "treeFoldInOrder" $ do
-            it "" $
-                treeFoldInOrder (\a -> a -> a) 0 Empty `shouldBe` 1
+            it "produces the integer 0" $
+                treeFoldInOrder (+) 0 (Empty :: TriTree Int) `shouldBe` 0
         describe "treeFoldPostOrder" $ do
-            it "" $ 
-                treeFoldPostOrder (\a -> a -> a) 0 Empty `shouldBe` 1
-        -}
+            it "produces the integer 0" $ 
+                treeFoldPostOrder (+) 0 Empty `shouldBe` 0

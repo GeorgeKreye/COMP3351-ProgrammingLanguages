@@ -57,30 +57,57 @@ module TriTree where
     treeMap (f :: a -> b) (NodeTwo x y l m r) = NodeTwo (f x) (f y) (treeMap f l) (treeMap f m) (treeMap f r)
     {- 
         Given a function, an initial value, and a TriTree, combines all values of the TriTree using the function in preorder (root value(s) before subtrees)
-        TODO: actual implementation
     -}
     treeFoldPreOrder :: (a -> a -> a) -> a -> TriTree a -> a
     treeFoldPreOrder _ v Empty = v
-    treeFoldPreOrder f v (NodeOne x l m r) = v
-    treeFoldPreOrder f v (NodeTwo x y l m r) = v
+    treeFoldPreOrder f v (NodeOne x l m _) =
+        let y = f v x
+            z = treeFoldPreOrder f y l
+        in
+            treeFoldPreOrder f z m
+    treeFoldPreOrder f v (NodeTwo x y l m r) = 
+        let a = f v x
+            b = f a y
+            c = treeFoldPreOrder f b l
+            d = treeFoldPreOrder f c m
+        in
+            treeFoldPreOrder f d r
     {- 
         Given a function, an initial value, and a TriTree, combines all values of the TriTree using the function in order (left subtree, lesser root value,
         middle subtree, etc.)
-        TODO: actual implementation
     -}
     treeFoldInOrder :: (a -> a -> a) -> a -> TriTree a -> a
     treeFoldInOrder _ v Empty = v
-    treeFoldInOrder f v (NodeOne x l m r) = v
-    treeFoldInOrder f v (NodeTwo x y l m r) = v
+    treeFoldInOrder f v (NodeOne x l m _) = 
+        let y = treeFoldInOrder f v l
+            z = f y x
+        in 
+            treeFoldInOrder f z m
+    treeFoldInOrder f v (NodeTwo x y l m r) = 
+        let a = treeFoldInOrder f v l
+            b = f a x
+            c = treeFoldInOrder f b m
+            d = f c y
+        in
+            treeFoldInOrder f d r
     {- 
         Given a function, an initial value, and a TriTree, combines all values of the TriTree using the function in postorder (subtrees before root
         value(s))
-        TODO: actual implementation
     -}
-    treeFoldPostOrder:: (a -> a -> a) -> a -> TriTree a -> a
+    treeFoldPostOrder :: (a -> a -> a) -> a -> TriTree a -> a
     treeFoldPostOrder _ v Empty = v
-    treeFoldPostOrder f v (NodeOne x l m r) = v
-    treeFoldPostOrder f v (NodeTwo x y l m r) = v
+    treeFoldPostOrder f v (NodeOne x l m _) = 
+        let y = treeFoldPostOrder f v l
+            z = treeFoldPostOrder f y m
+        in
+            f z x
+    treeFoldPostOrder f v (NodeTwo x y l m r) = 
+        let a = treeFoldPostOrder f v l
+            b = treeFoldPostOrder f a m
+            c = treeFoldPostOrder f b r
+            d = f c x
+        in
+            f d y
 
     {- 
         CREDIT
