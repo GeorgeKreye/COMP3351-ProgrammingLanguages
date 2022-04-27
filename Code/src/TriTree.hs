@@ -21,10 +21,13 @@ module TriTree where
     -}
     insert :: Ord a => a -> TriTree a -> TriTree a
     insert v Empty = NodeOne v Empty Empty Empty
-    insert v (NodeOne x l m r) =
-        if v < x
-            then NodeOne x (insert v l) m r
-            else NodeOne x l (insert v m) r
+    insert v (NodeOne x l m r)
+      | l == Empty && m == Empty && r == Empty =
+            if v > x
+                then NodeTwo x v Empty Empty Empty
+                else NodeTwo v x Empty Empty Empty
+      | v < x = NodeOne x (insert v l) m r
+      | otherwise = NodeOne x l (insert v m) r
     insert v (NodeTwo x y l m r)
       | v < x = NodeTwo x y (insert v l) m r
       | v >= x && v < y = NodeTwo x y l (insert v m) r
@@ -65,7 +68,7 @@ module TriTree where
             z = treeFoldPreOrder f y l
         in
             treeFoldPreOrder f z m
-    treeFoldPreOrder f v (NodeTwo x y l m r) = 
+    treeFoldPreOrder f v (NodeTwo x y l m r) =
         let a = f v x
             b = f a y
             c = treeFoldPreOrder f b l
@@ -78,12 +81,12 @@ module TriTree where
     -}
     treeFoldInOrder :: (a -> a -> a) -> a -> TriTree a -> a
     treeFoldInOrder _ v Empty = v
-    treeFoldInOrder f v (NodeOne x l m _) = 
+    treeFoldInOrder f v (NodeOne x l m _) =
         let y = treeFoldInOrder f v l
             z = f y x
-        in 
+        in
             treeFoldInOrder f z m
-    treeFoldInOrder f v (NodeTwo x y l m r) = 
+    treeFoldInOrder f v (NodeTwo x y l m r) =
         let a = treeFoldInOrder f v l
             b = f a x
             c = treeFoldInOrder f b m
@@ -96,12 +99,12 @@ module TriTree where
     -}
     treeFoldPostOrder :: (a -> a -> a) -> a -> TriTree a -> a
     treeFoldPostOrder _ v Empty = v
-    treeFoldPostOrder f v (NodeOne x l m _) = 
+    treeFoldPostOrder f v (NodeOne x l m _) =
         let y = treeFoldPostOrder f v l
             z = treeFoldPostOrder f y m
         in
             f z x
-    treeFoldPostOrder f v (NodeTwo x y l m r) = 
+    treeFoldPostOrder f v (NodeTwo x y l m r) =
         let a = treeFoldPostOrder f v l
             b = treeFoldPostOrder f a m
             c = treeFoldPostOrder f b r
