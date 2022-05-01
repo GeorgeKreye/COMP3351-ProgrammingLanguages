@@ -1,7 +1,7 @@
 {-# OPTIONS_GHC -Wno-type-defaults #-}
 module DailyHaskellSixSpec where
     import Test.Hspec 
-    import DailyHaskellSix 
+    import DailyHaskellSix
 
     spec :: Spec
     spec = do
