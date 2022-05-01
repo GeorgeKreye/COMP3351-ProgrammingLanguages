@@ -1,7 +1,7 @@
 {-# OPTIONS_GHC -Wno-type-defaults #-}
 module DailyHaskellSixSpec where
-    import Test.Hspec
-    import DailyHaskellSix
+    import Test.Hspec 
+    import DailyHaskellSix 
 
     spec :: Spec
     spec = do
@@ -16,9 +16,9 @@ module DailyHaskellSixSpec where
             it "produces the list [3,9]" $
                 removeMultiples 5 [3,5,10,9,15] `shouldBe` [3,9]
         describe "onlyJust" $ do
-            {- Doesn't compile (ambiguous type), need to fix:
             it "produces the list []" $
-                onlyJust [] `shouldBe` []
-            -}
+                onlyJust ([] :: [Maybe Int]) `shouldBe` []
             it "produces the list [Just 5, Just 10]" $
                 onlyJust [Nothing, Just 5, Nothing, Just 10] `shouldBe` [Just 5, Just 10]
+            it "produces the list []" $
+                onlyJust ([Nothing, Nothing] :: [Maybe Int]) `shouldBe` []
