@@ -16,5 +16,4 @@ module DailyHaskellSix where
         Given a list of Maybe instances, filters said list to remove any values of Nothing 
     -}
     onlyJust :: [Maybe a] -> [Maybe a]
-    onlyJust [] = []
-    onlyJust l = filter isJust l
+    onlyJust = filter isJust
