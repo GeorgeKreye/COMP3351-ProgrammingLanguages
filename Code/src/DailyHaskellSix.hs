@@ -5,3 +5,9 @@ module DailyHaskellSix where
     -}
     shorterThan :: Int -> [[Char]] -> [[Char]]
     shorterThan l = filter ((<= l) . length)
+    {- 
+        Given an integer and a list of integers, filters said list to remove all multiples of
+        the given integer
+    -}
+    removeMultiples :: Int -> [Int] -> [Int]
+    removeMultiples f = filter (\x -> x `mod` f /= 0)
