@@ -27,6 +27,7 @@ library
   exposed-modules:
       DailyFour
       DailyHaskellFive
+      DailyHaskellSix
       DailyOne
       DailyThree
       DailyTwo
@@ -111,6 +112,7 @@ test-suite Code-test
   other-modules:
       DailyFourSpec
       DailyHaskellFiveSpec
+      DailyHaskellSixSpec
       DailyOneSpec
       DailyThreeSpec
       DailyTwoSpec
