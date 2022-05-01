@@ -1,6 +1,6 @@
 {-# OPTIONS_GHC -Wno-type-defaults #-}
 module DailyHaskellSixSpec where
-    import Test.Hspec 
+    import Test.Hspec
     import DailyHaskellSix
 
     spec :: Spec
@@ -22,3 +22,11 @@ module DailyHaskellSixSpec where
                 onlyJust [Nothing, Just 5, Nothing, Just 10] `shouldBe` [Just 5, Just 10]
             it "produces the list []" $
                 onlyJust ([Nothing, Nothing] :: [Maybe Int]) `shouldBe` []
+        describe "allAnswers" $ do
+            it "produces Nothing" $
+                allAnswers invert [0,1] `shouldBe` Nothing
+            it "produces the list [0.5,0.25,0.125]" $
+                allAnswers invert [2,4,8] `shouldBe` Just [0.5,0.25,0.125]
+            it "produces the list []" $
+                allAnswers invert [] `shouldBe` Just []
+
