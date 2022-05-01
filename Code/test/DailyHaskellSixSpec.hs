@@ -20,5 +20,5 @@ module DailyHaskellSixSpec where
             it "produces the list []" $
                 onlyJust [] `shouldBe` []
             -}
-            it "produces the list  [Just 5, Just 10]" $
+            it "produces the list [Just 5, Just 10]" $
                 onlyJust [Nothing, Just 5, Nothing, Just 10] `shouldBe` [Just 5, Just 10]
