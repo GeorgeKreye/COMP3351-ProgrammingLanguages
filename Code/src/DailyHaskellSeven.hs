@@ -1,7 +1,10 @@
+{-# OPTIONS_GHC -Wno-unrecognised-pragmas #-}
+{-# HLINT ignore "Use and" #-}
 module DailyHaskellSeven where
     {- 
         Given a foldable list of lists, creates a single list containing all elements
         contained in the list of lists
+        TODO: fix
     -}
     createOneList :: Foldable t => t [[a]] -> [a]
     createOneList = foldr (\e a -> getList e ++ a) []
@@ -10,3 +13,21 @@ module DailyHaskellSeven where
     getList [[]] = []
     getList [] = []
     getList (x:xs) = x ++ getList xs
+    {- 
+        Given a list of positive integers, returns the largest integer
+    -}
+    findLargest :: [Int] -> Int
+    findLargest [] = 0
+    findLargest (x:xs) =
+        let
+            prev = findLargest xs
+        in
+            if x > prev
+                then x
+                else prev
+    {-
+        Given a list of booleans, returns True if all booleans are true and false otherwise
+    -}
+    allTrue :: [Bool] -> Bool
+    allTrue [] = False
+    allTrue l = foldr (&&) True l

@@ -5,8 +5,22 @@ module DailyHaskellSevenSpec where
 
     spec :: Spec
     spec = do
+        {- Doesn't compile, function needs fixed
         describe "createOneList" $ do
             it "produces the list [1,2,3,4,5]" $
                 createOneList [[1,2],[3],[],[4,5]] `shouldBe` [1,2,3,4,5]
             it "priduces the list []" $
                 createOneList [[],[],[]] `shouldBe` []
+        -}
+        describe "findLargest" $ do
+            it "produces the integer 15" $
+                findLargest [3,5,10,9,15] `shouldBe` 15
+            it "produces the integer 0" $ 
+                findLargest [] `shouldBe` 0
+        describe "allTrue"$ do
+            it "produces the boolean True" $
+                allTrue [True, True, True] `shouldBe` True
+            it "produces the boolean False" $
+                allTrue [False, True] `shouldBe` False
+            it "produces the boolean False" $
+                allTrue [] `shouldBe` False
