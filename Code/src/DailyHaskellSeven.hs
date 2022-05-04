@@ -1,7 +1,3 @@
-{-# OPTIONS_GHC -Wno-unrecognised-pragmas #-}
-{-# HLINT ignore "Use concat" #-}
-{-# HLINT ignore "Evaluate" #-}
-{-# HLINT ignore "Avoid lambda" #-}
 module DailyHaskellSeven where
     {- 
         Given a foldable list of lists, creates a single list containing all elements
@@ -9,8 +5,9 @@ module DailyHaskellSeven where
         TODO: Find correct function
     -}
     createOneList :: Foldable t => t [[a]] -> [a]
-    createOneList = foldr foo []
+    createOneList = foldr (\e a -> getList e ++ a) []
     -- helper function
-    foo :: [[a]] -> [a] -> [a]
-    foo [] = _
-    foo (x:xs) = _
+    getList :: [[a]] -> [a]
+    getList [[]] = []
+    getList [] = []
+    getList (x:xs) = x ++ getList xs
