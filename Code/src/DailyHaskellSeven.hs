@@ -9,4 +9,8 @@ module DailyHaskellSeven where
         TODO: Find correct function
     -}
     createOneList :: Foldable t => t [[a]] -> [a]
-    createOneList = foldr _ []
+    createOneList = foldr foo []
+    -- helper function
+    foo :: [[a]] -> [a] -> [a]
+    foo [] = _
+    foo (x:xs) = _
