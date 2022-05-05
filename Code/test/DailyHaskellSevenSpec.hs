@@ -5,7 +5,7 @@ module DailyHaskellSevenSpec where
 
     spec :: Spec
     spec = do
-        {- Doesn't compile, function needs fixed
+        {- doesn't compile
         describe "createOneList" $ do
             it "produces the list [1,2,3,4,5]" $
                 createOneList [[1,2],[3],[],[4,5]] `shouldBe` [1,2,3,4,5]

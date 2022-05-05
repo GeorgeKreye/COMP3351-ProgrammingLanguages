@@ -12,19 +12,26 @@ module DailyHaskellSeven where
     getList :: [[a]] -> [a]
     getList [[]] = []
     getList [] = []
-    getList (x:xs) = x ++ getList xs
+    getList (x:xs) = x ++ getList xs -- might be incorrect
     {- 
         Given a list of positive integers, returns the largest integer
     -}
     findLargest :: [Int] -> Int
-    findLargest [] = 0
-    findLargest (x:xs) =
+    findLargest =
+        {- non-fold:
         let
             prev = findLargest xs
         in
             if x > prev
                 then x
                 else prev
+        -}
+        -- fold:
+        foldr (\e p -> 
+            if e > p
+                then e
+                else p
+            ) 0
     {-
         Given a list of booleans, returns True if all booleans are true and false otherwise
     -}
