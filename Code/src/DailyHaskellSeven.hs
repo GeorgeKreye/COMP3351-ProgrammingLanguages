@@ -7,7 +7,7 @@ module DailyHaskellSeven where
         TODO: find function that works
     -}
     createOneList :: Foldable t => t [[a]] -> [a]
-    createOneList = foldr _ []
+    createOneList = foldr _ [] -- function needed where hole is
     -- non-foldr implementation for reference
     getList :: [[a]] -> [a]
     getList [[]] = []
