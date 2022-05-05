@@ -18,15 +18,6 @@ module DailyHaskellSeven where
     -}
     findLargest :: [Int] -> Int
     findLargest =
-        {- non-fold:
-        let
-            prev = findLargest xs
-        in
-            if x > prev
-                then x
-                else prev
-        -}
-        -- fold:
         foldr (\e p -> 
             if e > p
                 then e
