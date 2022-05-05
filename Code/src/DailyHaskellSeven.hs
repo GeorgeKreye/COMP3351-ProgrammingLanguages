@@ -4,15 +4,15 @@ module DailyHaskellSeven where
     {- 
         Given a foldable list of lists, creates a single list containing all elements
         contained in the list of lists
-        TODO: fix
+        TODO: find function that works
     -}
     createOneList :: Foldable t => t [[a]] -> [a]
-    createOneList = foldr (\e a -> getList e ++ a) []
-    -- helper function
+    createOneList = foldr _ []
+    -- non-foldr implementation for reference
     getList :: [[a]] -> [a]
     getList [[]] = []
     getList [] = []
-    getList (x:xs) = x ++ getList xs -- might be incorrect
+    getList (x:xs) = x ++ getList xs
     {- 
         Given a list of positive integers, returns the largest integer
     -}
