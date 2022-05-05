@@ -5,12 +5,11 @@ module DailyHaskellSevenSpec where
 
     spec :: Spec
     spec = do
-        -- createOneList tests don't compile
         describe "createOneList" $ do
             it "produces the list [1,2,3,4,5]" $
                 createOneList [[1,2],[3],[],[4,5]] `shouldBe` [1,2,3,4,5]
             it "priduces the list []" $
-                createOneList [[],[],[]] `shouldBe` []
+                createOneList ([[],[],[]] :: [[Int]]) `shouldBe` []
         describe "findLargest" $ do
             it "produces the integer 15" $
                 findLargest [3,5,10,9,15] `shouldBe` 15

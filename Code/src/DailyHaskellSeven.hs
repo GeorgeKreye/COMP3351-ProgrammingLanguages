@@ -1,24 +1,20 @@
 {-# OPTIONS_GHC -Wno-unrecognised-pragmas #-}
 {-# HLINT ignore "Use and" #-}
+{-# HLINT ignore "Use concat" #-}
 module DailyHaskellSeven where
     {- 
         Given a foldable list of lists, creates a single list containing all elements
         contained in the list of lists
         TODO: find function that works
     -}
-    createOneList :: Foldable t => t [[a]] -> [a]
-    createOneList = foldr _ [] -- function needed where hole is
-    -- non-foldr implementation for reference
-    getList :: [[a]] -> [a]
-    getList [[]] = []
-    getList [] = []
-    getList (x:xs) = x ++ getList xs
+    createOneList :: [[a]] -> [a]
+    createOneList = foldr (++) []
     {- 
         Given a list of positive integers, returns the largest integer
     -}
     findLargest :: [Int] -> Int
     findLargest =
-        foldr (\e p -> 
+        foldr (\e p ->
             if e > p
                 then e
                 else p
