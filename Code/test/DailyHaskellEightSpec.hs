@@ -10,3 +10,6 @@ module DailyHaskellEightSpec where
                 makeEvent "test" 1 "zeb" 0 0.0 0.0 `shouldBe` Nothing
             it "produces Event \"test\" 20 \"Feb\" 1982 32.5 10.2 successfully" $
                 makeEvent "test" 20 "Feb" 1982 32.5 10.2 `shouldBe` Just (Event "test" 20 "Feb" 1982 32.5 10.2)
+        describe "inYear" $ do
+            it "produces the list []" $
+                inYear 2001 [] `shouldBe` []
