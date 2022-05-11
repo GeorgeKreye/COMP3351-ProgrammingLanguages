@@ -11,5 +11,7 @@ module WeeklyHaskellThree where
     instance Show Vec where
       show (Vec a) = "Vec " ++ show a
     instance Eq Vec where
-      (==) (Vec a) (Vec b) = a == b 
+      (==) (Vec a) (Vec b) = and (zipWith (==) a b)
         
+    -- helper function
+
