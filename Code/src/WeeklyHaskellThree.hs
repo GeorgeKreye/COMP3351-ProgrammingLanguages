@@ -1,12 +1,12 @@
 {-# LANGUAGE DataKinds #-}
 module WeeklyHaskellThree where
-    class (Show a, Num a) => Vec a where
-        (+) :: [a] -> [a] -> [a]
-        (-) :: [a] -> [a] -> [a]
-        (*) :: [a] -> [a] -> [a]
-        (/) :: [a] -> [a] -> [a]
-    instance Vec Double where
-        (+) a b = zipWith (Prelude.+) a b
-        (-) a b = zipWith (Prelude.-) a b
-        (*) a b = zipWith (Prelude.*) a b
-        (/) a b = zipWith (Prelude./) a b
+    newtype Vec = Vec [Double]
+    instance Num Vec where
+      (+) (Vec a) (Vec b) = Vec (zipWith (+) a b)
+      (*) (Vec a) (Vec b) = Vec (zipWith (*) a b)
+      abs (Vec a)= Vec (map abs a)
+      signum (Vec a)= Vec (map signum a)
+      fromInteger i = Vec [fromInteger i]
+      negate (Vec a) = Vec (map negate a)
+    instance Show Vec where
+      show (Vec a) = "Vec " ++ show a
