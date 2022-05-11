@@ -5,7 +5,7 @@ module WeeklyHaskellThreeSpec where
 
     spec :: Spec
     spec = do
-        describe "Vec - Show" $ do
+        describe "Vec - show" $ do
             it "produces the string \"Vec [1.0,2.0,3.0,4.0]\"" $
                 show (Vec [1.0, 2.0, 3.0, 4.0]) `shouldBe` "Vec [1.0,2.0,3.0,4.0]"
             it "produces the string \"Vec []\"" $
@@ -20,3 +20,10 @@ module WeeklyHaskellThreeSpec where
                 Vec [2.0,3.0,4.0] * Vec [2.0,3.0,4.0] `shouldBe` Vec [4.0,9.0,16.0]
             it "produces Vec []" $
                 Vec [] * Vec [1.0] `shouldBe` Vec []
+        describe "Vec - abs" $
+            it "produces Vec [1.0,2.0,3.0]" $
+                abs (Vec [-1.0,-2.0,-3.0]) `shouldBe` Vec [1.0,2.0,3.0]
+            {- Doesn't compile
+            it "produces Vec [4.0,5.0]" $
+                abs (Vec [4.0,5.0]) `shouldBe` Vec [4.0,5.0]
+            -}
