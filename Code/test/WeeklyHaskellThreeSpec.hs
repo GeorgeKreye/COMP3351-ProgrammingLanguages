@@ -25,3 +25,5 @@ module WeeklyHaskellThreeSpec where
                 abs (Vec [-1.0,-2.0,-3.0]) `shouldBe` Vec [1.0,2.0,3.0]
             it "produces Vec [4.0,5.0]" $
                 abs (Vec [4.0,5.0]) `shouldBe` Vec [4.0,5.0]
+            it "produces Vec []" $
+                abs (Vec []) `shouldBe` Vec []
