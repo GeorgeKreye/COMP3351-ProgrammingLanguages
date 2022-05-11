@@ -10,3 +10,6 @@ module WeeklyHaskellThree where
       negate (Vec a) = Vec (map negate a)
     instance Show Vec where
       show (Vec a) = "Vec " ++ show a
+    instance Eq Vec where
+      (==) (Vec a) (Vec b) = a == b 
+        
