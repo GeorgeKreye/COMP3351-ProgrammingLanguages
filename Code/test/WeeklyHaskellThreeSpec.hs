@@ -20,10 +20,8 @@ module WeeklyHaskellThreeSpec where
                 Vec [2.0,3.0,4.0] * Vec [2.0,3.0,4.0] `shouldBe` Vec [4.0,9.0,16.0]
             it "produces Vec []" $
                 Vec [] * Vec [1.0] `shouldBe` Vec []
-        describe "Vec - abs" $
+        describe "Vec - abs" $ do
             it "produces Vec [1.0,2.0,3.0]" $
                 abs (Vec [-1.0,-2.0,-3.0]) `shouldBe` Vec [1.0,2.0,3.0]
-            {- Doesn't compile
             it "produces Vec [4.0,5.0]" $
                 abs (Vec [4.0,5.0]) `shouldBe` Vec [4.0,5.0]
-            -}
