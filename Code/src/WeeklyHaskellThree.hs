@@ -1,6 +1,12 @@
 {-# LANGUAGE DataKinds #-}
 module WeeklyHaskellThree where
-    -- vec type
-    newtype Vec a =
-        Vec3 [Double,Double,Double]
-        deriving (Eq,Ord,Show)
+    class (Show a, Num a) => Vec a where
+        (+) :: [a] -> [a] -> [a]
+        (-) :: [a] -> [a] -> [a]
+        (*) :: [a] -> [a] -> [a]
+        (/) :: [a] -> [a] -> [a]
+    instance Vec Double where
+        (+) a b = zipWith (Prelude.+) a b
+        (-) a b = zipWith (Prelude.-) a b
+        (*) a b = zipWith (Prelude.*) a b
+        (/) a b = zipWith (Prelude./) a b
