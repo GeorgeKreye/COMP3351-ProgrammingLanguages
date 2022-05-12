@@ -44,3 +44,8 @@ module WeeklyHaskellThreeSpec where
                 - (Vec [0.0]) `shouldBe` Vec [0.0]
             it "produces Vec []" $
                 - (Vec []) `shouldBe` Vec []
+        describe "Vec - (==)" $ do
+            it "produces the boolean True" $
+                Vec [3.2,4.5,7.9] == Vec [3.2,4.5,7.9] `shouldBe` True
+            it "produces the boolean False" $
+                Vec [1.3,5.6] == Vec [5.6] `shouldBe` False
