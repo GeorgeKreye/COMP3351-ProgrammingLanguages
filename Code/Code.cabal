@@ -9,9 +9,9 @@ version:        0.4.0.0
 description:    Please see the README on GitHub at <https://github.com/githubuser/DailyHaskell#readme>
 homepage:       https://github.com/githubuser/DailyHaskell#readme
 bug-reports:    https://github.com/githubuser/DailyHaskell/issues
-author:         Author name here
+author:         George Kreye
 maintainer:     example@example.com
-copyright:      2022 Author name here
+copyright:      2022 George Kreye
 license:        BSD3
 license-file:   LICENSE
 build-type:     Simple
@@ -26,6 +26,7 @@ source-repository head
 library
   exposed-modules:
       DailyFour
+      DailyHaskellEight
       DailyHaskellFive
       DailyHaskellSeven
       DailyHaskellSix
@@ -113,6 +114,7 @@ test-suite Code-test
   main-is: Spec.hs
   other-modules:
       DailyFourSpec
+      DailyHaskellEightSpec
       DailyHaskellFiveSpec
       DailyHaskellSevenSpec
       DailyHaskellSixSpec
