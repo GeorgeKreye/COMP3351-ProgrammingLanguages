@@ -27,3 +27,8 @@ module WeeklyHaskellThreeSpec where
                 abs (Vec [4.0,5.0]) `shouldBe` Vec [4.0,5.0]
             it "produces Vec []" $
                 abs (Vec []) `shouldBe` Vec []
+        describe "Vec - signum" $ do
+            it "produces Vec []" $
+                signum (Vec []) `shouldBe` Vec []
+            it "produces Vec [-1.0,0.0,1.0]" $
+                signum (Vec [-2.5,0,2.5]) `shouldBe` Vec[-1.0,0.0,1.0]
