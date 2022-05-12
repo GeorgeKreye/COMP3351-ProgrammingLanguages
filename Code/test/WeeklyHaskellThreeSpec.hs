@@ -81,3 +81,5 @@ module WeeklyHaskellThreeSpec where
         describe "Vec - mconcat" $ do
             it "produces Vec [1.0,2.0,3.0]" $
                 mconcat [Vec [], Vec [1.0],Vec [2.0],Vec [3.0]] `shouldBe` Vec [1.0,2.0,3.0]
+            it "produces Vec []" $
+                mconcat [Vec [], Vec []] `shouldBe` Vec []
