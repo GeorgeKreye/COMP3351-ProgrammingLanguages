@@ -37,3 +37,10 @@ module WeeklyHaskellThreeSpec where
                 1 `shouldBe` Vec [1.0]
             it "produces Vec [-8.0]" $
                 -8 `shouldBe` Vec [-8.0]
+        describe "Vec - negate" $ do
+            it "produces Vec [-3.5,4.8]" $
+                - (Vec [3.5,-4.8]) `shouldBe` Vec [-3.5,4.8]
+            it "produces Vec [0.0]" $
+                - (Vec [0.0]) `shouldBe` Vec [0.0]
+            it "produces Vec []" $
+                - (Vec []) `shouldBe` Vec []
