@@ -21,7 +21,7 @@ module WeeklyHaskellThree where
       (==) (Vec a) (Vec b) = and (zipWith (==) a b)
     -- Ord instance implementation
     instance Ord Vec where
-      compare (Vec a) (Vec b) = compare a b 
+      (<=) (Vec a) (Vec b) = a <= b
     -- Typeclass for magnitude
     class VecT a where
       magnitude :: VecT a => a -> Double
