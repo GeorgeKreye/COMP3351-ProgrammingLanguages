@@ -33,3 +33,13 @@ module DailyHaskellEight where
         if d >= s && d <= e
             then n : a
             else a) []
+    {-
+        Given a name, a lower set of Double coordinates, an upper set of Double coordinates,
+        and a list of Events, returns a list of the Events of that name which occured in
+        the area bound by the coordinates provided
+    -}
+    inArea :: [Char] -> Double -> Double -> Double -> Double -> [Event a] -> [Event a]
+    inArea n x1 y1 x2 y2 l =
+        if x2 < x1 || y2 < y1 -- check if coordinates are valid
+            then []
+            else filter (\(Event eN _ _ _ x y) -> n == eN && x >= x1 && x <= x2 && y >= y1 && y <= y2) l
