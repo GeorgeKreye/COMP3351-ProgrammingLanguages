@@ -15,7 +15,8 @@ module DailyHaskellEight where
                 then Nothing
                 else Just (Event name day month year x y)
     {- 
-        Given a year (in the form of an integer) and a list of Events, 
+        Given a year (in the form of an integer) and a list of Events, returns a list
+        containing only those events that occured in the given year
     -}
     inYear :: Int -> [Event a] -> [Event a]
     inYear y = filter (isYear y)
