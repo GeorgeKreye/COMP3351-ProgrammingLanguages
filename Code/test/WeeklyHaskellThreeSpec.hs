@@ -62,7 +62,22 @@ module WeeklyHaskellThreeSpec where
             it "produces the double 0.0" $
                 magnitude (Vec []) `shouldBe` 0.0
         describe "Vec - (<>)" $ do
+            it "produces Vec []" $
+                Vec [] <> Vec [] `shouldBe` Vec []
             it "produces Vec [0.1,0.2,0.3,0.4]" $
                 Vec [0.1,0.2] <> Vec [0.3,0.4] `shouldBe` Vec [0.1,0.2,0.3,0.4]
             it "produces Vec [7.3,2.5]" $
                 Vec [] <> Vec [7.3,2.5] `shouldBe` Vec [7.3,2.5]
+        describe "Vec - mempty" $ do
+            it "produces Vec []" $
+                mempty `shouldBe` Vec []
+        describe "Vec - mappend" $ do
+            it "produces Vec []" $
+                mappend (Vec []) (Vec[]) `shouldBe` Vec []
+            it "produces Vec [1.0,2.0]" $
+                mappend (Vec []) (Vec[1.0,2.0]) `shouldBe` Vec [1.0,2.0]
+            it "produces Vec [1.5,4.5,3.0,6.0]" $
+                mappend (Vec [1.5,4.5]) (Vec[3.0,6.0]) `shouldBe` Vec [1.5,4.5,3.0,6.0]
+        describe "Vec - mconcat" $ do
+            it "produces Vec [1.0,2.0,3.0]" $
+                mconcat [Vec [], Vec [1.0],Vec [2.0],Vec [3.0]] `shouldBe` Vec [1.0,2.0,3.0]
