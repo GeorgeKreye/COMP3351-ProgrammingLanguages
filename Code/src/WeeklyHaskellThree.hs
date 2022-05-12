@@ -25,6 +25,7 @@ module WeeklyHaskellThree where
     -- Typeclass for magnitude
     class VecT a where
       magnitude :: VecT a => a -> Double
-    -- VecT instance implementation, using head as magnitude
+    -- VecT instance implementation, using head as magnitude; returns 0 if empty Vec
     instance VecT Vec where
+      magnitude (Vec []) = 0
       magnitude (Vec a) = head a

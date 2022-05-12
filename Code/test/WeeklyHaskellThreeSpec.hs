@@ -56,3 +56,8 @@ module WeeklyHaskellThreeSpec where
                 Vec [10.5,13.2] <= Vec [1.3] `shouldBe` False
             it "produces the boolean True" $
                 Vec [] <= Vec [] `shouldBe` True
+        describe "Vec - magnitude" $ do
+            it "produces the double 3.5" $
+                magnitude (Vec [3.5,4.7]) `shouldBe` 3.5
+            it "produces the double 0.0" $
+                magnitude (Vec []) `shouldBe` 0.0
