@@ -29,3 +29,6 @@ module WeeklyHaskellThree where
     instance VecT Vec where
       magnitude (Vec []) = 0
       magnitude (Vec a) = head a
+    -- Semigroup instance implementation
+    instance Semigroup Vec where
+      (<>) (Vec a) (Vec b) = Vec (a ++ b)
