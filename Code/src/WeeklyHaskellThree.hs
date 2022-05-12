@@ -32,3 +32,6 @@ module WeeklyHaskellThree where
     -- Semigroup instance implementation
     instance Semigroup Vec where
       (<>) (Vec a) (Vec b) = Vec (a ++ b)
+    -- Monoid instance implementation
+    instance Monoid Vec where
+      mempty = Vec []
