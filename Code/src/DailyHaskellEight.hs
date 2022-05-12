@@ -23,4 +23,13 @@ module DailyHaskellEight where
     -- helper function
     isYear :: Int -> Event a -> Bool
     isYear y (Event _ _ _ v _ _) = y == v
-
+    {-
+        Given a range of days (in the form of 2 integers marking the start and end
+        of the range) and a list of Events, returns a list of the names of events
+        that occured in the range; can be in any month or year
+    -}
+    inDayRange :: Foldable t => Int -> Int -> [[Char]] -> t (Event a) -> [[Char]]
+    inDayRange s e = foldr (\(Event n d _ _ _ _) a -> 
+        if d >= s && d <= e
+            then n : a
+            else a)
