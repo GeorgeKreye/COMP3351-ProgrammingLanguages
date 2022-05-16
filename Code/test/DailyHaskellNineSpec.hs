@@ -21,5 +21,10 @@ module DailyHaskellNineSpec where
             it "produces the boolean True" $
                 firstFunctorLaw _ `shouldBe` True
             it "produces the boolean True" $
-                firstFunctorLaw _ _ _ `shouldBe` True
+                firstFunctorLaw _ `shouldBe` True
+        describe "Either String (Maybe Integer) - secondFunctorLaw" $ do
+            it "produces the boolean True" $
+                secondFunctorLaw _ _ _`shouldBe` True
+            it "produces the boolean True" $
+                secondFunctorLaw _ _ _ `shouldBe` True
         -}
