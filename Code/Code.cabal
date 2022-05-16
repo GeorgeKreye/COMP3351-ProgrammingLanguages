@@ -28,6 +28,7 @@ library
       DailyFour
       DailyHaskellEight
       DailyHaskellFive
+      DailyHaskellNine
       DailyHaskellSeven
       DailyHaskellSix
       DailyOne
@@ -116,6 +117,7 @@ test-suite Code-test
       DailyFourSpec
       DailyHaskellEightSpec
       DailyHaskellFiveSpec
+      DailyHaskellNineSpec
       DailyHaskellSevenSpec
       DailyHaskellSixSpec
       DailyOneSpec
