@@ -131,8 +131,7 @@ module Eval where
     boolOpVal _ _ _ = Left $ TypeError "boolean expressions require boolean values"
 
     -- fold over the list using the op, assumes the list has one element
-    boolOpFold :: Foldable t =>
-    (Bool -> Bool -> Bool) -> t (Either ErrorT Value) -> Either ErrorT Value
+    boolOpFold :: Foldable t => (Bool -> Bool -> Bool) -> t (Either ErrorT Value) -> Either ErrorT Value
     boolOpFold op = foldr1 (boolOpVal op)
 
     -- determine which bool operation to use to fold with by the kind of BoolOp passed in

@@ -33,7 +33,12 @@ module MiniRacketParser where
     -- a literal in MiniRacket is true, false, or a number
     -- TODO: parse literals which can be natural numbers or bools (true, false)
     literal :: Parser Value
-    literal = failParse "not implemented"
+    literal = do
+            parseKeyword "true"
+            return (BoolVal True)
+        <|> do 
+            parseKeyword "false"
+            return (BoolVal False)
 
     -- parse a literal expression, which at this point, is just a literal
     literalExpr :: Parser Expr
