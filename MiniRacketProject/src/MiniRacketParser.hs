@@ -33,14 +33,7 @@ module MiniRacketParser where
     -- a literal in MiniRacket is true, false, or a number
     -- TODO: parse literals which can be natural numbers or bools (true, false)
     literal :: Parser Value
-    literal = do 
-        parseKeyword "true"
-        return True
-        <|> do
-            parseKeyword "false"
-            return False
-        <|> do
-            parse
+    literal = failParse "not implemented"
 
     -- parse a literal expression, which at this point, is just a literal
     literalExpr :: Parser Expr
@@ -66,7 +59,7 @@ module MiniRacketParser where
     -- TODO: parse not expressions, note that "not" is a keyword, so
     -- as a big hint, you should use parseKeyword
     notExpr :: Parser Expr
-    notExpr = parseKeyword "not"
+    notExpr = failParse "not implemented"
 
     {- DON'T DEFINE THESE YET, THEY'RE NOT PART OF THE ASSIGNMENT 
     -- varExpr :: Parser Expr

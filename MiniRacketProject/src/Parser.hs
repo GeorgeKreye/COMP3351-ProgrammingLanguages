@@ -72,8 +72,8 @@ module Parser where
  -- parse three "abcdefg"
 
     instance Monad Parser where 
-    -- (>>=) :: Parser a -> (a -> Parser b) -> Parser b
-    p >>= f = P (\inp -> case parse p inp of 
+        (>>=) :: Parser t -> (t -> Parser a) -> Parser a
+        p >>= f = P (\inp -> case parse p inp of 
                     Left msg -> Left msg
                     Right (v, out) -> parse (f v) out)
 
