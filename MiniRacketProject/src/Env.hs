@@ -1,7 +1,7 @@
 module Env where
     import qualified Data.List
     -- is this what we want it to be?
-
+    
     emptyEnv :: [a]
     emptyEnv = [] 
 

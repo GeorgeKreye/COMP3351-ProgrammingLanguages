@@ -1,5 +1,4 @@
 module MiniRacketParser where
-
     import Parser
     import Expr
     import Control.Applicative

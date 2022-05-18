@@ -1,5 +1,4 @@
 module Error where
-
   -- we have two kinds of errors, a type error, meaning that when we evaluated, 
   -- we ended up with the wrong types--these are types that the programmer made, not
   -- types that we can safely ignore because we can try different things. EvalErrors can

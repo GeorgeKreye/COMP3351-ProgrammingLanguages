@@ -1,5 +1,4 @@
 module Parser where
-
     import Control.Applicative
 
     import Data.Char

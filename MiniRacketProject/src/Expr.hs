@@ -1,4 +1,4 @@
-module Expr where 
+module Expr where
 {-
   Expr contains both expression types and value types in the language. 
 -}

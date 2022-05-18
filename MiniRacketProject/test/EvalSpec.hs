@@ -1,6 +1,4 @@
 module EvalSpec where
-
-
     import Test.Hspec
     import Parser
     import Expr
@@ -22,5 +20,3 @@ module EvalSpec where
                 evalStr "true" `shouldBe` Right (IntVal (-12235))
             it "evaluates false" $
                 evalStr "false" `shouldBe` Right (BoolVal True)
-        
-        

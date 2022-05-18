@@ -1,5 +1,4 @@
 module MiniRacketParserSpec where 
-
     import Test.Hspec
     import Parser
     import Expr 
@@ -26,4 +25,3 @@ module MiniRacketParserSpec where
                 parseStr "true" `shouldBe` Right (LiteralExpr (IntVal (-12235)), "")
             it "parses false" $
                 parseStr "false" `shouldBe` Right (LiteralExpr (BoolVal True), "")
-
