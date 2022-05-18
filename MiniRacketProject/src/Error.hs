@@ -1,11 +1,11 @@
 module Error where
 
--- we have two kinds of errors, a type error, meaning that when we evaluated, 
--- we ended up with the wrong types--these are types that the programmer made, not
--- types that we can safely ignore because we can try different things. EvalErrors can
--- usually be ignored, but have a message associated with them so we know why, and
--- NoEval means there wasn't an eval at all
-data ErrorT = 
+  -- we have two kinds of errors, a type error, meaning that when we evaluated, 
+  -- we ended up with the wrong types--these are types that the programmer made, not
+  -- types that we can safely ignore because we can try different things. EvalErrors can
+  -- usually be ignored, but have a message associated with them so we know why, and
+  -- NoEval means there wasn't an eval at all
+  data ErrorT = 
       TypeError String 
     | EvalError String 
     | SyntaxError String

@@ -1,10 +1,10 @@
 module Parser where
 
-import Control.Applicative
+    import Control.Applicative
 
-import Data.Char
+    import Data.Char
 
-import Error
+    import Error
 
 -- a parser is a type that contains a function that goes from a String
 -- to the pair of a result of the parse and the rest of the string. You
@@ -18,14 +18,14 @@ import Error
 -- parse someParser "hello" will deconstruct someParser to extract the 
 -- parsing function out of it, and then apply it to the next parameter, 
 -- "hello" in this example
-newtype Parser a = P { parse :: String -> Either ErrorT (a, String) }
+    newtype Parser a = P { parse :: String -> Either ErrorT (a, String) }
 
 -- the whole purpose of the 'item' Parser is to create a parser that
 -- always reads one value, and removes it from the front of the input
 -- so that we end up with the rest of the input. From here, we can
 -- construct all other Parsers!
-item :: Parser Char
-item = P (\case 
+    item :: Parser Char
+    item = P (\case 
             [] -> Left NoParse
             (x:xs) -> Right (x,xs))
 
@@ -37,9 +37,9 @@ item = P (\case
 -- defines fmap over the functor, this maps the function f onto the 
 -- results of the parse. We assume there might be more than one answer,
 -- and if so, we map over each possible answer (which is a pair)
-instance Functor Parser where
+    instance Functor Parser where
     -- fmap :: (a -> b) -> Parser a -> Parser b
-    fmap f p = P (\inp -> case parse p inp of
+        fmap f p = P (\inp -> case parse p inp of
                             -- note that we can't just do err -> err because we could be going from a 
                             -- Parser a -> Parser b, so technically Left :: Either String [(a, String)] 
                             -- while Left :: Either String [(b, String)]
@@ -49,12 +49,12 @@ instance Functor Parser where
 
 
 -- now define the Parser as an applicative
-instance Applicative Parser where
+    instance Applicative Parser where
     -- pure :: a -> Parser a
     -- this returns the parser which simply returns the value (always) without consuming any input
-    pure v = P (\inp -> Right (v, inp))
+        pure v = P (\inp -> Right (v, inp))
 
-    pfuns <*> px = P (\inp -> case parse pfuns inp of
+        pfuns <*> px = P (\inp -> case parse pfuns inp of
                         Left msg -> Left msg 
                         Right (g, out) -> parse (fmap g px) out)
 
@@ -66,13 +66,13 @@ instance Applicative Parser where
 
 -- let's construct some parsers using applicatives--this one will 
 -- parse the first 3 characters but return only the first and 3rd elements
-three :: Parser (Char, Char)
-three = g <$> item <*> item <*> item 
-    where g x _ z = (x, z)
+    three :: Parser (Char, Char)
+    three = g <$> item <*> item <*> item 
+        where g x _ z = (x, z)
 
  -- parse three "abcdefg"
 
-instance Monad Parser where 
+    instance Monad Parser where 
     -- (>>=) :: Parser a -> (a -> Parser b) -> Parser b
     p >>= f = P (\inp -> case parse p inp of 
                     Left msg -> Left msg
@@ -112,149 +112,149 @@ instance Alternative Parser where
                      otherParse -> otherParse)
                  
 
--- the following will not work until you import Control.Applicative into ghci:
--- parse empty "abc"
--- parse (item <|> return 'd') "abc"
--- > Right ('a', "bc")
--- parse (empty <|> return 'd') "abc"
--- > Right ('d', "abc")
+    -- the following will not work until you import Control.Applicative into ghci:
+    -- parse empty "abc"
+    -- parse (item <|> return 'd') "abc"
+    -- > Right ('a', "bc")
+    -- parse (empty <|> return 'd') "abc"
+    -- > Right ('d', "abc")
 
 
--- this gives us 3 basic parsers, item, which parses the first character of a non-empty input,
--- return v always succeeds with the value v and doesn't change the input, and empty that always fails
+    -- this gives us 3 basic parsers, item, which parses the first character of a non-empty input,
+    -- return v always succeeds with the value v and doesn't change the input, and empty that always fails
 
--- now let's define a parser that matches a single character
-satisfies :: (Char -> Bool) -> Parser Char
-satisfies p = do 
-    x <- item 
-    if p x 
-        then return x 
-        else failParse (show x ++ " didn't match expected character")
+    -- now let's define a parser that matches a single character
+    satisfies :: (Char -> Bool) -> Parser Char
+    satisfies p = do 
+        x <- item 
+        if p x 
+            then return x 
+            else failParse (show x ++ " didn't match expected character")
 
-digit :: Parser Char 
-digit = satisfies isDigit
+    digit :: Parser Char 
+    digit = satisfies isDigit
 
-upper :: Parser Char 
-upper = satisfies isUpper
+    upper :: Parser Char 
+    upper = satisfies isUpper
 
-lower :: Parser Char 
-lower = satisfies isLower
+    lower :: Parser Char    
+    lower = satisfies isLower
 
-letter :: Parser Char 
-letter = satisfies isAlpha 
+    letter :: Parser Char 
+    letter = satisfies isAlpha 
 
-alphanum :: Parser Char 
-alphanum = satisfies isAlphaNum 
+    alphanum :: Parser Char 
+    alphanum = satisfies isAlphaNum 
 
--- this parser parses the given character
-char :: Char -> Parser Char 
-char x = satisfies (== x)
+    -- this parser parses the given character
+    char :: Char -> Parser Char 
+    char x = satisfies (== x)
 
-space :: Parser Char 
-space = satisfies isSpace
+    space :: Parser Char 
+    space = satisfies isSpace
 
-breakChar :: Parser Char
-breakChar = satisfies (\x -> isSpace x || x == ')' || x == '(')
+    breakChar :: Parser Char
+    breakChar = satisfies (\x -> isSpace x || x == ')' || x == '(')
 
--- this parser then takes that idea and parses an entire string
-string :: String -> Parser String 
-string [] = return []
-string (x:xs) = char x >> string xs >> return (x:xs)
--- alternatively, we can write it as 
--- string (x:xs) = 
--- do 
---   char x
---   string xs 
---   return (x:xs)
+    -- this parser then takes that idea and parses an entire string
+    string :: String -> Parser String 
+    string [] = return []
+    string (x:xs) = char x >> string xs >> return (x:xs)
+    -- alternatively, we can write it as 
+    -- string (x:xs) = 
+    -- do 
+    --   char x
+    --   string xs 
+    --   return (x:xs)
 
--- the next two parsers implement "many" and "some" which apply the
--- parser repeatedly until it fails, with the result values from each successful
--- parse being returned in a list
+    -- the next two parsers implement "many" and "some" which apply the
+    -- parser repeatedly until it fails, with the result values from each successful
+    -- parse being returned in a list
 
--- many x = Parser.some x <|> pure []
--- some x = (:) <$> x <*> Parser.many x
-kstar :: Alternative f => f a -> f [a]
-kstar x = kplus x <|> pure []
-kplus :: Alternative f => f a -> f [a]
-kplus x = (:) <$> x <*> kstar x 
-
-
-ident :: Parser String 
-ident = do
-    x <- lower 
-    xs <- kstar alphanum 
-    return (x:xs)
--- parse ident "abc def"
+    -- many x = Parser.some x <|> pure []
+    -- some x = (:) <$> x <*> Parser.many x
+    kstar :: Alternative f => f a -> f [a]
+    kstar x = kplus x <|> pure []
+    kplus :: Alternative f => f a -> f [a]
+    kplus x = (:) <$> x <*> kstar x 
 
 
-nat :: Parser Integer 
-nat = do 
-    xs <- kplus digit
-    -- notice, if Parser.some digit fails, then return 
-    -- is never called and read is never executed
-    return (read xs)
--- parse nat "123 abc"
-
-eatspace :: Parser ()
-eatspace = do 
-    _ <- kstar space
-    return ()
--- parse eatspace "   abc"
+    ident :: Parser String 
+    ident = do
+        x <- lower 
+        xs <- kstar alphanum 
+        return (x:xs)
+    -- parse ident "abc def"
 
 
-int :: Parser Integer
-int = do 
-    -- try to parse a -n
-    char '-'
-    n <- nat 
-    return (-n)
-    <|> 
-    -- otherwise, just parse an integer
-    nat 
+    nat :: Parser Integer 
+    nat = do 
+        xs <- kplus digit
+        -- notice, if Parser.some digit fails, then return 
+        -- is never called and read is never executed
+        return (read xs)
+        -- parse nat "123 abc"
 
--- parse int "-35"
--- parse int "35"
+    eatspace :: Parser ()
+    eatspace = do 
+        _ <- kstar space
+        return ()
+    -- parse eatspace "   abc"
 
--- since most languages allow spacing freely, we will write a parser
--- that consumes space before and after a function 
-token :: Parser a -> Parser a 
-token p = do 
-    eatspace 
-    v <- p 
-    eatspace
-    return v
 
-spacedToken :: Parser a -> Parser a
-spacedToken p = do 
-    eatspace 
-    v <- p
-    kstar breakChar 
-    return v
+    int :: Parser Integer
+    int = do 
+        -- try to parse a -n
+        char '-'
+        n <- nat 
+        return (-n)
+        <|> 
+        -- otherwise, just parse an integer
+        nat 
 
--- now we can use token to construct parsers based on it
-identifier :: Parser String 
-identifier = token ident 
+    -- parse int "-35"
+    -- parse int "35"
 
--- an identifier that must be followed by a space
-spacedIdentifier :: Parser String
-spacedIdentifier = spacedToken ident 
+    -- since most languages allow spacing freely, we will write a parser
+    -- that consumes space before and after a function 
+    token :: Parser a -> Parser a 
+    token p = do 
+        eatspace 
+        v <- p 
+        eatspace
+        return v
 
-natural :: Parser Integer
-natural = token int 
+    spacedToken :: Parser a -> Parser a
+    spacedToken p = do 
+        eatspace 
+        v <- p
+        kstar breakChar 
+        return v
 
-symbol :: String -> Parser String 
-symbol xs = token (string xs)
+    -- now we can use token to construct parsers based on it
+    identifier :: Parser String 
+    identifier = token ident 
 
--- match a symbol, but there must be a trailing space!
-spacedSymbol :: String -> Parser String
-spacedSymbol xs = spacedToken (string xs)
+    -- an identifier that must be followed by a space
+    spacedIdentifier :: Parser String
+    spacedIdentifier = spacedToken ident 
 
-natlist :: Parser [Integer]
-natlist = do 
-    eatspace
-    symbol "["
-    n <- natural
-    ns <- kstar (symbol "," >> natural)
-    symbol "["
-    eatspace
-    return (n:ns)
+    natural :: Parser Integer
+    natural = token int 
+
+    symbol :: String -> Parser String 
+    symbol xs = token (string xs)
+
+    -- match a symbol, but there must be a trailing space!
+    spacedSymbol :: String -> Parser String
+    spacedSymbol xs = spacedToken (string xs)
+
+    natlist :: Parser [Integer]
+    natlist = do 
+        eatspace
+        symbol "["
+        n <- natural
+        ns <- kstar (symbol "," >> natural)
+        symbol "["
+        eatspace
+        return (n:ns)
