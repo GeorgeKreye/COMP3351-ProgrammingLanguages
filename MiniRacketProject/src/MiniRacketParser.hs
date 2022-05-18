@@ -1,47 +1,47 @@
 module MiniRacketParser where
 
-import Parser
-import Expr
-import Control.Applicative
-import Error ( ErrorT ) 
+    import Parser
+    import Expr
+    import Control.Applicative
+    import Error ( ErrorT ) 
 
-parseBool :: Parser Bool
-parseBool = do
+    parseBool :: Parser Bool
+    parseBool = do
         parseKeyword "true"
         return True
         <|> do
             parseKeyword "false"
             return False
 
--- implement parsing bool operations, these are 'and' and 'or'
-parseBoolOp :: Parser BoolOp
-parseBoolOp = failParse "not implemented"
+    -- implement parsing bool operations, these are 'and' and 'or'
+    parseBoolOp :: Parser BoolOp
+    parseBoolOp = failParse "not implemented"
     
 
--- parse math operations and return the MathOp
--- TODO: Add the other math operations: *, div, mod
-parseMathOp :: Parser MathOp
-parseMathOp =
-    do symbol "+" >> return Add
-    <|> do symbol "-" >> return Sub
+    -- parse math operations and return the MathOp
+    -- TODO: Add the other math operations: *, div, mod
+    parseMathOp :: Parser MathOp
+    parseMathOp =
+        do symbol "+" >> return Add
+        <|> do symbol "-" >> return Sub
     
 
--- parse the comp operations and return the CompOp
--- TODO: add the comparison operators: equals?, < 
-parseCompOp :: Parser CompOp
-parseCompOp = failParse "not implemented"
+    -- parse the comp operations and return the CompOp
+    -- TODO: add the comparison operators: equals?, < 
+    parseCompOp :: Parser CompOp
+    parseCompOp = failParse "not implemented"
     
--- a literal in MiniRacket is true, false, or a number
--- TODO: parse literals which can be natural numbers or bools (true, false)
-literal :: Parser Value
-literal = do 
-    parseKeyword "true"
-    return True
-    <|> do
-        parseKeyword "false"
-        return False
-    <|> do
-        return natural
+    -- a literal in MiniRacket is true, false, or a number
+    -- TODO: parse literals which can be natural numbers or bools (true, false)
+    literal :: Parser Value
+    literal = do 
+        parseKeyword "true"
+        return True
+        <|> do
+            parseKeyword "false"
+            return False
+        <|> do
+            parse
 
 -- parse a literal expression, which at this point, is just a literal
 literalExpr :: Parser Expr
