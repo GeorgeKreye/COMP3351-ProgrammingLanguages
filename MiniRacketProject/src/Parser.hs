@@ -78,34 +78,34 @@ module Parser where
                     Right (v, out) -> parse (f v) out)
 
 
-threeM :: Parser (Char, Char)
-threeM = do 
-    x <- item 
-    _ <- item 
-    z <- item 
-    return (x, z)
+    threeM :: Parser (Char, Char)
+    threeM = do 
+        x <- item 
+        _ <- item 
+        z <- item 
+        return (x, z)
 
- --parse threeM "abcdefg"
+    --parse threeM "abcdefg"
 
-errorParse :: ErrorT -> Parser a
-errorParse t = P (\_ -> Left t)
+    errorParse :: ErrorT -> Parser a
+    errorParse t = P (\_ -> Left t)
 
--- define a parser that fails with a given message
-noParse :: Parser a
-noParse = errorParse NoParse
+    -- define a parser that fails with a given message
+    noParse :: Parser a
+    noParse = errorParse NoParse
 
-syntaxError :: String -> Parser a
-syntaxError msg = errorParse $ SyntaxError msg 
+    syntaxError :: String -> Parser a
+    syntaxError msg = errorParse $ SyntaxError msg 
 
-failParse :: String -> Parser a
-failParse msg = errorParse $ ParseError msg
+    failParse :: String -> Parser a
+    failParse msg = errorParse $ ParseError msg
 
-instance Alternative Parser where 
-     -- empty :: Parser a
-    empty = syntaxError "Syntax error: nothing matches to parse"
-    -- (<|>) :: Parser a -> Parser a -> Parser a 
-    p <|> q = P (\inp -> case parse p inp of 
-        -- ignore these left cases, but not the others
+    instance Alternative Parser where 
+         -- empty :: Parser a
+        empty = syntaxError "Syntax error: nothing matches to parse"
+        -- (<|>) :: Parser a -> Parser a -> Parser a 
+        p <|> q = P (\inp -> case parse p inp of 
+            -- ignore these left cases, but not the others
                      Left NoParse -> parse q inp
                      Left (ParseError _) -> parse q inp
                      otherParse -> otherParse)

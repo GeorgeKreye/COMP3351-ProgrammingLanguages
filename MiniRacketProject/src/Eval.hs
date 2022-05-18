@@ -95,7 +95,8 @@ module Eval where
     evalLiteral :: Evaluator Value
     evalLiteral = do
         -- retrieve the literal value using next, and return the value
-        evalNotImplemented
+       (_,LiteralExpr val) <- next
+       return val
 
     {- DON'T DEFINE THIS YET, IT'S NOT PART OF THE ASSIGNMENT
     -- evalVar :: Evaluator Value
