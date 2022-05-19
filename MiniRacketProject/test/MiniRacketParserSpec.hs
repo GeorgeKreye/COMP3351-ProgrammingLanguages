@@ -1,3 +1,4 @@
+{-# OPTIONS_GHC -Wno-unused-imports #-}
 module MiniRacketParserSpec where 
     import Test.Hspec
     import Parser

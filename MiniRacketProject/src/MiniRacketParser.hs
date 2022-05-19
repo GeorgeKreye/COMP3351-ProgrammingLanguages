@@ -2,7 +2,7 @@ module MiniRacketParser where
     import Parser
     import Expr
     import Control.Applicative
-    import Error ( ErrorT ) 
+    import Error ( ErrorT )
 
     parseBool :: Parser Bool
     parseBool = do
@@ -15,7 +15,7 @@ module MiniRacketParser where
     -- implement parsing bool operations, these are 'and' and 'or'
     parseBoolOp :: Parser BoolOp
     parseBoolOp = failParse "not implemented"
-    
+
 
     -- parse math operations and return the MathOp
     -- TODO: Add the other math operations: *, div, mod
@@ -23,24 +23,24 @@ module MiniRacketParser where
     parseMathOp =
         do symbol "+" >> return Add
         <|> do symbol "-" >> return Sub
-    
+
 
     -- parse the comp operations and return the CompOp
     -- TODO: add the comparison operators: equals?, < 
     parseCompOp :: Parser CompOp
     parseCompOp = failParse "not implemented"
-    
+
     -- a literal in MiniRacket is true, false, or a number
     -- TODO: parse literals which can be natural numbers or bools (true, false)
     literal :: Parser Value
     literal = do
             parseKeyword "true"
             return (BoolVal True)
-        <|> do 
+        <|> do
             parseKeyword "false"
             return (BoolVal False)
         <|> do
-            let s = "0" -- need to figure out how to grab the string and confirm its an integer
+            let s = "0" -- need to obtain string and determine that it is an integer
             return (IntVal (read s :: Integer))
 
     -- parse a literal expression, which at this point, is just a literal
@@ -84,7 +84,7 @@ module MiniRacketParser where
     -- TODO: add math expressions
     mathExpr :: Parser Expr
     mathExpr = failParse "not implemented"
-    
+
 
     -- a comp expression is the comp operator and the parsing of two expressions
     compExpr :: Parser Expr
@@ -103,11 +103,11 @@ module MiniRacketParser where
         PairExpr expr1 <$> parseExpr
 
     -- note that this is syntactic sugar, cons is just replaced by the PairExpr ast
-    consExpr :: Parser Expr 
-    consExpr = do 
+    consExpr :: Parser Expr
+    consExpr = do
         symbol "cons"
-        expr1 <- parseExpr 
-        PairExpr expr1 <$> parseExpr 
+        expr1 <- parseExpr
+        PairExpr expr1 <$> parseExpr
 
 
 
@@ -138,10 +138,10 @@ module MiniRacketParser where
         <|> parseParens compExpr
         <|> parseParens pairExpr
         <|> parseParens consExpr
-        <|> parseParens parseExpr 
+        <|> parseParens parseExpr
 
     -- a helper function that you can use to test your parsing:
     -- syntax is simply 'parseStr "5"' which will call parseExpr for you
-    parseStr :: String -> Either ErrorT (Expr, String) 
-    parseStr str = do 
+    parseStr :: String -> Either ErrorT (Expr, String)
+    parseStr str = do
         parse parseExpr str
