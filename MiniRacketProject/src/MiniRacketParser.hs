@@ -39,6 +39,9 @@ module MiniRacketParser where
         <|> do 
             parseKeyword "false"
             return (BoolVal False)
+        <|> do
+            let s = "0" -- need to figure out how to grab the string and confirm its an integer
+            return (IntVal (read s :: Integer))
 
     -- parse a literal expression, which at this point, is just a literal
     literalExpr :: Parser Expr
