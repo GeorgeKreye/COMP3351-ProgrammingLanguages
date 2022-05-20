@@ -5,37 +5,37 @@ module Parser where
 
     import Error
 
--- a parser is a type that contains a function that goes from a String
--- to the pair of a result of the parse and the rest of the string. You
--- can think of this as a State monad really, here String is the state, 
--- a is the return type. To make it useful for parsing though, we'll 
--- return an Either String (a, String), so that we can have error messages.
--- 
--- we call the field 'parse' because it will be a function that accesses
--- the function in this type and so we simplify having to constantly 
--- decompose P, we'll extract p and use it on any input string. 
--- parse someParser "hello" will deconstruct someParser to extract the 
--- parsing function out of it, and then apply it to the next parameter, 
--- "hello" in this example
+    -- a parser is a type that contains a function that goes from a String
+    -- to the pair of a result of the parse and the rest of the string. You
+    -- can think of this as a State monad really, here String is the state, 
+    -- a is the return type. To make it useful for parsing though, we'll 
+    -- return an Either String (a, String), so that we can have error messages.
+    -- 
+    -- we call the field 'parse' because it will be a function that accesses
+    -- the function in this type and so we simplify having to constantly 
+    -- decompose P, we'll extract p and use it on any input string. 
+    -- parse someParser "hello" will deconstruct someParser to extract the 
+    -- parsing function out of it, and then apply it to the next parameter, 
+    -- "hello" in this example
     newtype Parser a = P { parse :: String -> Either ErrorT (a, String) }
 
--- the whole purpose of the 'item' Parser is to create a parser that
--- always reads one value, and removes it from the front of the input
--- so that we end up with the rest of the input. From here, we can
--- construct all other Parsers!
+    -- the whole purpose of the 'item' Parser is to create a parser that
+    -- always reads one value, and removes it from the front of the input
+    -- so that we end up with the rest of the input. From here, we can
+    -- construct all other Parsers!
     item :: Parser Char
     item = P (\case 
             [] -> Left NoParse
             (x:xs) -> Right (x,xs))
 
--- ghci> parse item "" 
--- Left "no more input"
--- ghci> parse item "abc"
--- ('a', "bc")
+    -- ghci> parse item "" 
+    -- Left "no more input"
+    -- ghci> parse item "abc"
+    -- ('a', "bc")
 
--- defines fmap over the functor, this maps the function f onto the 
--- results of the parse. We assume there might be more than one answer,
--- and if so, we map over each possible answer (which is a pair)
+    -- defines fmap over the functor, this maps the function f onto the 
+    -- results of the parse. We assume there might be more than one answer,
+    -- and if so, we map over each possible answer (which is a pair)
     instance Functor Parser where
     -- fmap :: (a -> b) -> Parser a -> Parser b
         fmap f p = P (\inp -> case parse p inp of
@@ -47,7 +47,7 @@ module Parser where
 
 
 
--- now define the Parser as an applicative
+    -- now define the Parser as an applicative
     instance Applicative Parser where
     -- pure :: a -> Parser a
     -- this returns the parser which simply returns the value (always) without consuming any input
@@ -57,19 +57,19 @@ module Parser where
                         Left msg -> Left msg 
                         Right (g, out) -> parse (fmap g px) out)
 
--- instance Alternative (Either String) where 
---     empty = Left "empty"
---     Left msg <|> q = q 
---     p <|> _ = p
+    -- instance Alternative (Either String) where 
+    --     empty = Left "empty"
+    --     Left msg <|> q = q 
+    --     p <|> _ = p
 
 
--- let's construct some parsers using applicatives--this one will 
--- parse the first 3 characters but return only the first and 3rd elements
+    -- let's construct some parsers using applicatives--this one will 
+    -- parse the first 3 characters but return only the first and 3rd elements
     three :: Parser (Char, Char)
     three = g <$> item <*> item <*> item 
         where g x _ z = (x, z)
 
- -- parse three "abcdefg"
+     -- parse three "abcdefg"
 
     instance Monad Parser where 
         (>>=) :: Parser t -> (t -> Parser a) -> Parser a

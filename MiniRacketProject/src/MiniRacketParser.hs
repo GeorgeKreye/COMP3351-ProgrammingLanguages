@@ -12,43 +12,45 @@ module MiniRacketParser where
             parseKeyword "false"
             return False
 
-    -- implement parsing bool operations, these are 'and' and 'or'
+    -- parsing bool operations, these are 'and' and 'or'
     parseBoolOp :: Parser BoolOp
-    parseBoolOp = failParse "not implemented"
+    parseBoolOp = do
+        parseKeyword "and"
+        return And
+        <|> do
+            parseKeyword "or"
+            return Or
 
 
     -- parse math operations and return the MathOp
-    -- TODO: Add the other math operations: *, div, mod
     parseMathOp :: Parser MathOp
     parseMathOp =
         do symbol "+" >> return Add
         <|> do symbol "-" >> return Sub
-
+        <|> do symbol "*" >> return Mul
+        <|> do symbol "div" >> return Div
+        <|> do symbol "mod" >> return Mod
 
     -- parse the comp operations and return the CompOp
-    -- TODO: add the comparison operators: equals?, < 
     parseCompOp :: Parser CompOp
-    parseCompOp = failParse "not implemented"
+    parseCompOp = do
+        parseKeyword "equal?"
+        return Eq
+        <|> do symbol "<" >> return Lt
 
     -- a literal in MiniRacket is true, false, or a number
-    -- TODO: parse literals which can be natural numbers or bools (true, false)
     literal :: Parser Value
     literal = do
-            parseKeyword "true"
-            return (BoolVal True)
+        BoolVal <$> parseBool
         <|> do
-            parseKeyword "false"
-            return (BoolVal False)
-        <|> do
-            let s = "0" -- need to obtain string and determine that it is an integer
-            return (IntVal (read s :: Integer))
+        IntVal <$> natural
 
     -- parse a literal expression, which at this point, is just a literal
     literalExpr :: Parser Expr
     literalExpr = do
         LiteralExpr <$> literal
 
-
+    -- keywords for keyword parsing
     keywordList :: [String]
     keywordList = ["false", "true", "not", "and", "or", "equal?"]
 
@@ -64,10 +66,11 @@ module MiniRacketParser where
             else failParse $ "saw " ++ name ++ ", expected " ++ keyword
 
 
-    -- TODO: parse not expressions, note that "not" is a keyword, so
-    -- as a big hint, you should use parseKeyword
+    -- parses not expressions
     notExpr :: Parser Expr
-    notExpr = failParse "not implemented"
+    notExpr = do
+        parseKeyword "not"
+        NotExpr <$> parseExpr
 
     {- DON'T DEFINE THESE YET, THEY'RE NOT PART OF THE ASSIGNMENT 
     -- varExpr :: Parser Expr
@@ -77,7 +80,7 @@ module MiniRacketParser where
     -- a bool expression is the operator followed by one or more expressions that we have to parse
     -- TODO: add bool expressions 
     boolExpr :: Parser Expr
-    boolExpr = failParse "not implemented"
+    boolExpr = BoolExpr <$> parseBoolOp <*> parseExpr <*> parseExpr -- should work?
 
 
     -- a math expression is the operator followed by one or more expressions that we have to parse

@@ -18,6 +18,6 @@ module EvalSpec where
             it "evaluates negative numbers: -12235" $
                 evalStr "-12235" `shouldBe` Right (IntVal (-12235))
             it "evaluates true" $
-                evalStr "true" `shouldBe` Right (IntVal (-12235))
+                evalStr "true" `shouldBe` Right (BoolVal True)
             it "evaluates false" $
-                evalStr "false" `shouldBe` Right (BoolVal True)
+                evalStr "false" `shouldBe` Right (BoolVal False)

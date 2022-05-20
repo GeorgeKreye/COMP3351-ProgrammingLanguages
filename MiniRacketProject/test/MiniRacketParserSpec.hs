@@ -23,6 +23,9 @@ module MiniRacketParserSpec where
             it "parses negative numbers: -12235" $
                 parseStr "-12235" `shouldBe` Right (LiteralExpr (IntVal (-12235)), "")
             it "parses true" $
-                parseStr "true" `shouldBe` Right (LiteralExpr (IntVal (-12235)), "")
+                parseStr "true" `shouldBe` Right (LiteralExpr (BoolVal True), "")
             it "parses false" $
-                parseStr "false" `shouldBe` Right (LiteralExpr (BoolVal True), "")
+                parseStr "false" `shouldBe` Right (LiteralExpr (BoolVal False), "")
+        describe "parse ops" $ do
+            it "parses bool op: and" $
+                parse parseBoolOp "and" `shouldBe` Right (And,"")
