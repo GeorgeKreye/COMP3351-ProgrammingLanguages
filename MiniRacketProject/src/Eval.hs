@@ -3,6 +3,7 @@
 {-# OPTIONS_GHC -Wno-unused-imports #-}
 {-# OPTIONS_GHC -Wno-unused-matches #-}
 {-# HLINT ignore "Redundant case" #-}
+{-# OPTIONS_GHC -Wno-incomplete-patterns #-}
 module Eval where
     import Expr
     import Env
@@ -13,9 +14,6 @@ module Eval where
     import Control.Monad
     import Parser
 
-
-
-
     -- we begin with an Expr, and return an Either String (a, Expr), here
     -- the String is an error message, but Expr is the remaining expression
     -- to be evaluated
@@ -24,7 +22,7 @@ module Eval where
     -- this is the basic evaluator, it ends when our ast is an EmptyExpr, but otherwise,
     -- we get the the environment and expr returned
     next :: Evaluator (ValueEnv, Expr)
-    next = E (\parserState -> case parserState of 
+    next = E (\parserState -> case parserState of
             (_, EmptyExpr) -> Left $ EvalError "no more expressions"
             (env, x) -> Right ((env, x), (env, EmptyExpr)))
 
@@ -34,7 +32,7 @@ module Eval where
     evalError err = E (\_ -> Left err)
 
     evalNotImplemented :: Evaluator a
-    evalNotImplemented = evalError EvalNotImplemented 
+    evalNotImplemented = evalError EvalNotImplemented
 
     -- failEval is an EvalError which is a general error for evaluation
     failEval :: String -> Evaluator a
@@ -51,7 +49,6 @@ module Eval where
     -- a NoSymbol error is an error when a symbol is looked up in the environment, but not found
     noSymbol :: String -> Evaluator a
     noSymbol msg = evalError $ NoSymbol msg
-
 
     -- an evaluator is a Functor
     instance Functor Evaluator where
@@ -93,7 +90,6 @@ module Eval where
     instance MonadFail Evaluator where
       fail _ = mzero
 
-
     -- here's how we evaluate a literal, fairly straightforward
     evalLiteral :: Evaluator Value
     evalLiteral = do
@@ -105,6 +101,11 @@ module Eval where
     -- evalVar :: Evaluator Value
     -}
 
+    evalSingleExpr :: ValueEnv -> Expr -> Either ErrorT Value
+    evalSingleExpr env expr = case eval evalExpr (env, expr) of
+      Right (res, _) -> Right res
+      Left msg -> Left msg
+
     -- this evaluates a list of expressions and returns a list of values
     -- by mapping an evaluator function (using <$>) over the list of expressions
     evalListOfExprs :: ValueEnv -> [Expr] -> [Either ErrorT Value]
@@ -114,7 +115,6 @@ module Eval where
                 Right (res, _) -> Right res
                 Left msg -> Left msg) <$> exprs
 
-
     -- evaluates a bool expression, this first evaluates all the 
     -- arguments to the bool expression and then uses calcBoolList 
     -- to calculate the boolean operation over the arguments. Note that 
@@ -123,9 +123,9 @@ module Eval where
     evalBoolExpr :: Evaluator Value
     evalBoolExpr = do
         (env, BoolExpr op exprs) <- next
-        -- TODO: implement the rest!
-        evalNotImplemented  
-
+        case calcBoolList op (evalListOfExprs env exprs) of
+          Left et -> failEval "not a boolean expression"
+          Right va -> return va
 
     -- performs the boolean operation on Either String Values where this works on the Values
     -- only if the kinds are BoolVal, otherwise we return Left
@@ -143,17 +143,20 @@ module Eval where
         And -> boolOpFold (&&) lst
         Or -> boolOpFold (||) lst
 
-
     evalMathExpr :: Evaluator Value
     evalMathExpr = do
         (env, MathExpr op exprs) <- next
-        -- TODO: Implement the rest!
-        evalNotImplemented
+        case calcMathList op (evalListOfExprs env exprs) of
+          Left et -> failEval "not a math expression"
+          Right va -> return va
 
     -- evaluates a comparison, specifically equals? and <
     evalCompExpr :: Evaluator Value
     evalCompExpr = do
-        evalNotImplemented
+        (env, CompExpr op a b) <- next
+        case calcCompExpr op (evalSingleExpr env a) (evalSingleExpr env b) of
+            Left et -> failEval "not a valid comp expression"
+            Right va -> return va
 
     -- takes two Either Values and runs the math op on them internally, producing the same type,
     -- but failing if either of them is not an IntVal (which are the only things math ops work on)
@@ -180,20 +183,23 @@ module Eval where
     subValList [Right (IntVal x)] = Right (IntVal (-x))
     subValList lst = mathOpFold (-) lst
 
+    mulValList :: Foldable t => t (Either ErrorT Value) -> Either ErrorT Value
+    mulValList = mathOpFold (*)
 
-    -- TODO: You'll need to implement these to make the rest of the functions work!
-    --mulValList :: Foldable t => t (Either ErrorT Value) -> Either ErrorT Value
-    --divValList :: Foldable t => t (Either ErrorT Value) -> Either ErrorT Value
-    --modValList :: Foldable t => t (Either ErrorT Value) -> Either ErrorT Value
+    divValList :: Foldable t => t (Either ErrorT Value) -> Either ErrorT Value
+    divValList = mathOpFold div
 
+    modValList :: Foldable t => t (Either ErrorT Value) -> Either ErrorT Value
+    modValList = mathOpFold mod
 
-    calcMathList :: 
+    calcMathList ::
         MathOp -> [Either ErrorT Value] -> Either ErrorT Value
     calcMathList op lst = case op of
         Add -> addValList lst
         Sub -> subValList lst
-        _ -> error "calcMathList not fully Not implemented"
-
+        Mul -> mulValList lst
+        Div -> divValList lst
+        Mod -> modValList lst
 
     {-
       A somewhat complicated implementation of calcCompExpr mainly because we have 
@@ -213,6 +219,12 @@ module Eval where
     calcCompExpr Eq _ _ = Left $ TypeError "equal? can only compare values of the same type"
     calcCompExpr Lt (Right (IntVal v)) (Right (IntVal v')) = Right $ BoolVal $ v < v'
     calcCompExpr Lt _ _ = Left $ TypeError "< can only compare values of the numbers type"
+    calcCompExpr Leq (Right (IntVal v)) (Right (IntVal v')) = Right $ BoolVal $ v <= v'
+    calcCompExpr Leq _ _ = Left $ TypeError "<= can only compare values of the numbers type"
+    calcCompExpr Gt (Right (IntVal v)) (Right (IntVal v')) = Right $ BoolVal $ v > v'
+    calcCompExpr Gt _ _ = Left $ TypeError "> can only compare values of the numbers type"
+    calcCompExpr Geq (Right (IntVal v)) (Right (IntVal v')) = Right $ BoolVal $ v >= v'
+    calcCompExpr Geq _ _ = Left $ TypeError ">= can only compare values of the numbers type"
 
 
     {- DON'T DEFINE THESE YET, THEY'RE NOT PART OF THE ASSIGNMENT
@@ -228,8 +240,6 @@ module Eval where
     evalNotExpr = do
         (env, NotExpr expr) <- next
         case eval evalExpr (env, expr) of
-            -- you must resolve the different cases in order to handle Not
-            _ -> failEval "Not implemented" 
 
 
     {- DON'T DEFINE THESE YET, THEY'RE NOT PART OF THE ASSIGNMENT 
@@ -243,7 +253,7 @@ module Eval where
         -- extract the current environment and make sure this is a Pair type
         (env, PairExpr e1 e2) <- next
         -- to evaluate a pair, we must evaluate the left and right parts of the pair
-        case getValue $ eval evalExpr (env, e1) of 
+        case getValue $ eval evalExpr (env, e1) of
             Right v1 ->
                 case getValue $ eval evalExpr (env, e2) of
                     Right v2 -> return $ PairVal (v1, v2)
@@ -255,12 +265,18 @@ module Eval where
     -- different options. Note that depending on what you put first might
     -- change how you evaluate your expressions.
 
-    -- TODO: Add evaluations for Bool, Not, Math, and Comp
+    -- TODO: Add evaluation for Not
     evalExpr :: Evaluator Value
     evalExpr =
         evalLiteral
         <|>
         evalPairExpr
+        <|>
+        evalBoolExpr
+        <|>
+        evalMathExpr
+        <|>
+        evalCompExpr
 
 
     -- parses the string then evaluates it

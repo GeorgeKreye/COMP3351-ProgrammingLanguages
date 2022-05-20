@@ -37,6 +37,9 @@ module MiniRacketParser where
         parseKeyword "equal?"
         return Eq
         <|> do symbol "<" >> return Lt
+        <|> do symbol "<=" >> return Leq
+        <|> do symbol ">" >> return Gt
+        <|> do symbol ">=" >> return Geq
 
     -- a literal in MiniRacket is true, false, or a number
     literal :: Parser Value
@@ -80,13 +83,13 @@ module MiniRacketParser where
     -- a bool expression is the operator followed by one or more expressions that we have to parse
     -- TODO: add bool expressions 
     boolExpr :: Parser Expr
-    boolExpr = BoolExpr <$> parseBoolOp <*> parseExpr <*> parseExpr -- should work?
+    boolExpr = BoolExpr <$> parseBoolOp <*> parseExpr <*> parseExpr
 
 
     -- a math expression is the operator followed by one or more expressions that we have to parse
     -- TODO: add math expressions
     mathExpr :: Parser Expr
-    mathExpr = failParse "not implemented"
+    mathExpr = MathExpr <$> parseMathOp <*> parseExpr <*> parseExpr
 
 
     -- a comp expression is the comp operator and the parsing of two expressions

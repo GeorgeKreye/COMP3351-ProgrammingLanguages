@@ -6,7 +6,7 @@ module Expr where
   -- define the operator types
   data BoolOp = And | Or deriving (Show, Eq)
   data MathOp = Add | Sub | Mul | Div | Mod deriving (Show, Eq)
-  data CompOp = Eq | Lt deriving (Show, Eq)
+  data CompOp = Eq | Lt | Leq | Gt | Geq deriving (Show, Eq)
 
   -- define the expression types
   data Expr = 
