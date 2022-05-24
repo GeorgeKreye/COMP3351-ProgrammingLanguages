@@ -26,7 +26,7 @@ module EvalSpec where
                 evalStr "(and true true)" `shouldBe` Right (BoolVal True)
             it "evaluates (or false true) = true" $
                 evalStr "(or false true)" `shouldBe` Right (BoolVal True)
-        describe "eval not expressions" $ do
+        describe "eval not expressions" $ do -- evals currently fail
             it "evaluates (not true) = false" $
                 evalStr "(not true)" `shouldBe` Right (BoolVal False)
             it "evaluates (not false) = true" $
@@ -41,17 +41,17 @@ module EvalSpec where
             it "evaluates (div 4 2) = 2" $
                 evalStr "(div 4 2)" `shouldBe` Right (IntVal 2)
         describe "eval comp expressions" $ do
-            it "evaluates (equal? 1 1) = true" $
+            it "evaluates (equal? 1 1) = true" $ -- parse currently fails
                 evalStr "(equal? 1 1)" `shouldBe` Right (BoolVal True)
             it "evaluates (< 1 2) = true" $
                 evalStr "(< 1 2)" `shouldBe` Right (BoolVal True)
-            it "evaluates (<= 1 1) = true" $
+            it "evaluates (<= 1 1) = true" $ -- parse currently fails
                 evalStr "(<= 1 1)" `shouldBe` Right (BoolVal True)
-            it "evaluates (<= 1 2) = true" $
+            it "evaluates (<= 1 2) = true" $ -- parse currently fails
                 evalStr "(<= 1 2)" `shouldBe` Right (BoolVal True)
             it "evaluates (> 2 1) = true" $
                 evalStr "(> 2 1)" `shouldBe` Right (BoolVal True)
-            it "evaluates (>= 1 1) = true" $
+            it "evaluates (>= 1 1) = true" $ -- parse currently fails
                 evalStr "(>= 1 1)" `shouldBe` Right (BoolVal True)
-            it "evaluates (>= 2 1) = true" $
+            it "evaluates (>= 2 1) = true" $ -- parse currently fails
                 evalStr "(>= 2 1)" `shouldBe` Right (BoolVal True)
