@@ -232,14 +232,17 @@ module Eval where
     -- evalIfExpr :: Evaluator Value
     -}
 
-    -- evaluate a Not expression, which should flip the boolean result 
-    -- TODO: if the type isn't a bool value after evaluating it, you
-    --   should return a type error, which can be done as follows:
-    -- typeError "not <boolexpr> .. must evaluate to a bool type"
+    -- evaluate a Not expression, which should flip the boolean result
     evalNotExpr :: Evaluator Value
     evalNotExpr = do
         (env, NotExpr expr) <- next
         case eval evalExpr (env, expr) of
+            Left et -> failEval "not a valid expression" 
+            Right (v,_) -> case v of -- hole should be empty
+                IntVal n ->  typeError "not <boolexpr> .. must evaluate to a bool type"
+                PairVal x1 ->  typeError "not <boolexpr> .. must evaluate to a bool type"
+                ClosureVal s str ex x1 ->  typeError "not <boolexpr> .. must evaluate to a bool type"
+                BoolVal b -> return (BoolVal (not b))
 
 
     {- DON'T DEFINE THESE YET, THEY'RE NOT PART OF THE ASSIGNMENT 

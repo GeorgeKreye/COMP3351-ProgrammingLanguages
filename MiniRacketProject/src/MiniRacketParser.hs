@@ -21,7 +21,6 @@ module MiniRacketParser where
             parseKeyword "or"
             return Or
 
-
     -- parse math operations and return the MathOp
     parseMathOp :: Parser MathOp
     parseMathOp =
@@ -67,7 +66,6 @@ module MiniRacketParser where
         if name `elem` keywordList && keyword == name
             then return name
             else failParse $ "saw " ++ name ++ ", expected " ++ keyword
-
 
     -- parses not expressions
     notExpr :: Parser Expr
