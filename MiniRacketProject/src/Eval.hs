@@ -1,9 +1,6 @@
 {-# OPTIONS_GHC -Wno-unrecognised-pragmas #-}
-{-# HLINT ignore "Use lambda-case" #-}
 {-# OPTIONS_GHC -Wno-unused-imports #-}
-{-# OPTIONS_GHC -Wno-unused-matches #-}
-{-# HLINT ignore "Redundant case" #-}
-{-# OPTIONS_GHC -Wno-incomplete-patterns #-}
+{-# HLINT ignore "Use lambda-case" #-}
 module Eval where
     import Expr
     import Env
@@ -124,7 +121,7 @@ module Eval where
     evalBoolExpr = do
         (env, BoolExpr op exprs) <- next
         case calcBoolList op (evalListOfExprs env exprs) of
-          Left et -> failEval "not a boolean expression"
+          Left _ -> failEval "not a boolean expression"
           Right va -> return va
 
     -- performs the boolean operation on Either String Values where this works on the Values
@@ -147,7 +144,7 @@ module Eval where
     evalMathExpr = do
         (env, MathExpr op exprs) <- next
         case calcMathList op (evalListOfExprs env exprs) of
-          Left et -> failEval "not a math expression"
+          Left _ -> failEval "not a math expression"
           Right va -> return va
 
     -- evaluates a comparison, specifically equals? and <
@@ -155,7 +152,7 @@ module Eval where
     evalCompExpr = do
         (env, CompExpr op a b) <- next
         case calcCompExpr op (evalSingleExpr env a) (evalSingleExpr env b) of
-            Left et -> failEval "not a valid comp expression"
+            Left _ -> failEval "not a valid comp expression"
             Right va -> return va
 
     -- takes two Either Values and runs the math op on them internally, producing the same type,
@@ -237,11 +234,11 @@ module Eval where
     evalNotExpr = do
         (env, NotExpr expr) <- next
         case eval evalExpr (env, expr) of
-            Left et -> failEval "not a valid expression" 
+            Left _ -> failEval "not a valid expression"
             Right (v,_) -> case v of -- hole should be empty
-                IntVal n ->  typeError "not <boolexpr> .. must evaluate to a bool type"
-                PairVal x1 ->  typeError "not <boolexpr> .. must evaluate to a bool type"
-                ClosureVal s str ex x1 ->  typeError "not <boolexpr> .. must evaluate to a bool type"
+                IntVal _ ->  typeError "not <boolexpr> .. must evaluate to a bool type"
+                PairVal _ ->  typeError "not <boolexpr> .. must evaluate to a bool type"
+                ClosureVal {} ->  typeError "not <boolexpr> .. must evaluate to a bool type"
                 BoolVal b -> return (BoolVal (not b))
 
 
