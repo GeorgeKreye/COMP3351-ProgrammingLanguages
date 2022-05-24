@@ -5,21 +5,15 @@ module MiniRacketParser where
     import Error ( ErrorT )
 
     parseBool :: Parser Bool
-    parseBool = do
-        parseKeyword "true"
-        return True
-        <|> do
-            parseKeyword "false"
-            return False
+    parseBool = 
+        do parseKeyword "true" >>return True
+        <|> do parseKeyword "false" >> return False
 
     -- parsing bool operations, these are 'and' and 'or'
     parseBoolOp :: Parser BoolOp
-    parseBoolOp = do
-        parseKeyword "and"
-        return And
-        <|> do
-            parseKeyword "or"
-            return Or
+    parseBoolOp = 
+        do parseKeyword "and" >> return And
+        <|> do parseKeyword "or" >> return Or
 
     -- parse math operations and return the MathOp
     parseMathOp :: Parser MathOp
@@ -33,25 +27,23 @@ module MiniRacketParser where
     -- parse the comp operations and return the CompOp
     -- TODO: Fix parsing 'equal?'
     parseCompOp :: Parser CompOp
-    parseCompOp = do symbol "<=" >> return Leq
+    parseCompOp = 
+        do symbol "<=" >> return Leq
         <|> do symbol ">=" >> return Geq
         <|> do symbol "<" >> return Lt
         <|> do symbol ">" >> return Gt
-        <|> do
-        parseKeyword "equal?"
-        return Eq
+        <|> do parseKeyword "equal?" >> return Eq -- question mark is dropped, preventing match
 
     -- a literal in MiniRacket is true, false, or a number
     literal :: Parser Value
-    literal = do
-        BoolVal <$> parseBool
-        <|> do
-        IntVal <$> natural
+    literal = 
+        do BoolVal <$> parseBool
+        <|> do IntVal <$> natural
 
     -- parse a literal expression, which at this point, is just a literal
     literalExpr :: Parser Expr
-    literalExpr = do
-        LiteralExpr <$> literal
+    literalExpr = 
+        do LiteralExpr <$> literal
 
     -- keywords for keyword parsing
     keywordList :: [String]
@@ -70,9 +62,7 @@ module MiniRacketParser where
 
     -- parses not expressions
     notExpr :: Parser Expr
-    notExpr = do
-        parseKeyword "not"
-        NotExpr <$> parseExpr
+    notExpr = do parseKeyword "not" >> NotExpr <$> parseExpr
 
     {- DON'T DEFINE THESE YET, THEY'RE NOT PART OF THE ASSIGNMENT 
     -- varExpr :: Parser Expr
@@ -124,7 +114,7 @@ module MiniRacketParser where
 
     -- an atom is a literalExpr, which can be an actual literal or some other things
     parseAtom :: Parser Expr
-    parseAtom = do
+    parseAtom = do 
         literalExpr
 
     -- the main parsing function which alternates between all the options you have
@@ -142,5 +132,4 @@ module MiniRacketParser where
     -- a helper function that you can use to test your parsing:
     -- syntax is simply 'parseStr "5"' which will call parseExpr for you
     parseStr :: String -> Either ErrorT (Expr, String)
-    parseStr str = do
-        parse parseExpr str
+    parseStr str = do parse parseExpr str
