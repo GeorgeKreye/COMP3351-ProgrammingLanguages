@@ -31,6 +31,7 @@ module MiniRacketParser where
         <|> do symbol "mod" >> return Mod
 
     -- parse the comp operations and return the CompOp
+    -- TODO: Fix 'equal?', '<=', and '>=' parses
     parseCompOp :: Parser CompOp
     parseCompOp = do
         parseKeyword "equal?"
