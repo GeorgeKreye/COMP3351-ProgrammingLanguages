@@ -31,3 +31,13 @@ module MiniRacketParserSpec where
                 parseStr "(and true)" `shouldBe` Right (BoolExpr And [LiteralExpr (BoolVal True)],"")
             it "parses bool expr: or true" $
                 parseStr "(or true)" `shouldBe` Right (BoolExpr Or [LiteralExpr (BoolVal True)], "")
+            it "parses math expr: (+ 1 1)" $
+                parseStr "(+ 1 1)" `shouldBe` Right (MathExpr Add [LiteralExpr (IntVal 1), LiteralExpr (IntVal 1)],"")
+            it "parses math expr: (- 1 1)" $
+                parseStr "(- 1 1)" `shouldBe` Right (MathExpr Sub [LiteralExpr (IntVal 1), LiteralExpr (IntVal 1)],"")
+            it "parses math expr: (* 2 2)" $
+                parseStr "(* 2 2)" `shouldBe` Right (MathExpr Mul [LiteralExpr (IntVal 2), LiteralExpr (IntVal 2)],"")
+            it "parses math expr: (div 4 2)" $
+                parseStr "(div 4 2)" `shouldBe` Right (MathExpr Div [LiteralExpr (IntVal 4), LiteralExpr (IntVal 2)],"")
+            it "parses math expr: (mod 1 3)" $
+                parseStr "(mod 1 3)" `shouldBe` Right (MathExpr Mod [LiteralExpr (IntVal 1), LiteralExpr (IntVal 3)],"")
