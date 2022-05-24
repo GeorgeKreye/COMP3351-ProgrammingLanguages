@@ -81,16 +81,12 @@ module MiniRacketParser where
     -}
 
     -- a bool expression is the operator followed by one or more expressions that we have to parse
-    -- TODO: add bool expressions 
     boolExpr :: Parser Expr
-    boolExpr = BoolExpr <$> parseBoolOp <*> parseExpr <*> parseExpr
-
+    boolExpr =  BoolExpr <$> parseBoolOp <*> kstar parseExpr
 
     -- a math expression is the operator followed by one or more expressions that we have to parse
-    -- TODO: add math expressions
     mathExpr :: Parser Expr
-    mathExpr = MathExpr <$> parseMathOp <*> parseExpr <*> parseExpr
-
+    mathExpr = MathExpr <$> parseMathOp <*> kstar parseExpr
 
     -- a comp expression is the comp operator and the parsing of two expressions
     compExpr :: Parser Expr
@@ -114,8 +110,6 @@ module MiniRacketParser where
         symbol "cons"
         expr1 <- parseExpr
         PairExpr expr1 <$> parseExpr
-
-
 
     parseParens :: Parser Expr -> Parser Expr
     parseParens p = do

@@ -21,3 +21,7 @@ module EvalSpec where
                 evalStr "true" `shouldBe` Right (BoolVal True)
             it "evaluates false" $
                 evalStr "false" `shouldBe` Right (BoolVal False)
+            it "evaluates (and true true) = true" $
+                evalStr "(and true true)" `shouldBe` Right (BoolVal True)
+            it "evaluates (* 2 2) = 4" $
+                evalStr "(* 2 2)" `shouldBe` Right (IntVal 4)

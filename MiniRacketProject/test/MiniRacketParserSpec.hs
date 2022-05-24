@@ -27,5 +27,7 @@ module MiniRacketParserSpec where
             it "parses false" $
                 parseStr "false" `shouldBe` Right (LiteralExpr (BoolVal False), "")
         describe "parse ops" $ do
-            it "parses bool op: and" $
-                parse parseBoolOp "and" `shouldBe` Right (And,"")
+            it "parses bool expr: and true" $
+                parseStr "(and true)" `shouldBe` Right (BoolExpr And [LiteralExpr (BoolVal True)],"")
+            it "parses bool expr: or true" $
+                parseStr "(or true)" `shouldBe` Right (BoolExpr Or [LiteralExpr (BoolVal True)], "")
