@@ -32,7 +32,7 @@ module MiniRacketParser where
         <|> do symbol ">=" >> return Geq
         <|> do symbol "<" >> return Lt
         <|> do symbol ">" >> return Gt
-        <|> do parseKeyword "equal?" >> return Eq -- question mark is dropped, preventing match
+        <|> do parseKeyword "equal?" >> return Eq -- question mark is being dropped for some reason, preventing match
 
     -- a literal in MiniRacket is true, false, or a number
     literal :: Parser Value
