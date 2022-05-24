@@ -31,15 +31,15 @@ module MiniRacketParser where
         <|> do symbol "mod" >> return Mod
 
     -- parse the comp operations and return the CompOp
-    -- TODO: Fix 'equal?', '<=', and '>=' parses
+    -- TODO: Fix parsing 'equal?'
     parseCompOp :: Parser CompOp
     parseCompOp = do
         parseKeyword "equal?"
         return Eq
-        <|> do symbol "<" >> return Lt
         <|> do symbol "<=" >> return Leq
-        <|> do symbol ">" >> return Gt
         <|> do symbol ">=" >> return Geq
+        <|> do symbol "<" >> return Lt
+        <|> do symbol ">" >> return Gt
 
     -- a literal in MiniRacket is true, false, or a number
     literal :: Parser Value
