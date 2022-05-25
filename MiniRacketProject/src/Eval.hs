@@ -230,7 +230,6 @@ module Eval where
     -}
 
     -- evaluate a Not expression, which should flip the boolean result
-    -- TODO: fix, compiles but doesn't work
     evalNotExpr :: Evaluator Value
     evalNotExpr = do
         (env, NotExpr expr) <- next
@@ -278,6 +277,8 @@ module Eval where
         evalMathExpr
         <|>
         evalCompExpr
+        <|>
+        evalNotExpr
 
 
     -- parses the string then evaluates it
