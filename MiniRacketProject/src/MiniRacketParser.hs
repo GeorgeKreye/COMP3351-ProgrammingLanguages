@@ -5,13 +5,13 @@ module MiniRacketParser where
     import Error ( ErrorT )
 
     parseBool :: Parser Bool
-    parseBool = 
+    parseBool =
         do parseKeyword "true" >>return True
         <|> do parseKeyword "false" >> return False
 
     -- parsing bool operations, these are 'and' and 'or'
     parseBoolOp :: Parser BoolOp
-    parseBoolOp = 
+    parseBoolOp =
         do parseKeyword "and" >> return And
         <|> do parseKeyword "or" >> return Or
 
@@ -26,22 +26,22 @@ module MiniRacketParser where
 
     -- parse the comp operations and return the CompOp
     parseCompOp :: Parser CompOp
-    parseCompOp = 
+    parseCompOp =
         do symbol "<=" >> return Leq
         <|> do symbol ">=" >> return Geq
         <|> do symbol "<" >> return Lt
         <|> do symbol ">" >> return Gt
-        <|> do symbol "equal?" >> return Eq 
+        <|> do symbol "equal?" >> return Eq
 
     -- a literal in MiniRacket is true, false, or a number
     literal :: Parser Value
-    literal = 
+    literal =
         do BoolVal <$> parseBool
         <|> do IntVal <$> natural
 
     -- parse a literal expression, which at this point, is just a literal
     literalExpr :: Parser Expr
-    literalExpr = 
+    literalExpr =
         do LiteralExpr <$> literal
 
     -- keywords for keyword parsing
@@ -85,19 +85,19 @@ module MiniRacketParser where
     compExpr :: Parser Expr
     compExpr = CompExpr <$> parseCompOp <*> parseExpr <*> parseExpr
 
-    -- TODO: Implement ifExpr
     -- parse an if-expression, which begins with the keyword if,
     -- and is followed by three expressions
     ifExpr :: Parser Expr
-    ifExpr = do 
-        failParse "Not implemented"
+    ifExpr = do
+        parseKeyword "if"
+        IfExpr <$> parseExpr <*> parseExpr <*> parseExpr
 
     --TODO: Implement applyExpr
     -- what we do know is that the left argument will result in a function,
     -- otherwise we'll have an error, but nesting them like this allows us
     -- to further build up functions
     applyExpr :: Parser Expr
-    applyExpr = do 
+    applyExpr = do
         failParse "Not implemented"
 
     -- TODO: Implement let expressions  
@@ -106,7 +106,7 @@ module MiniRacketParser where
     -- to be bound, an expression to bind to that name, a close
     -- parenthesis, and a body  
     letExpr :: Parser Expr
-    letExpr = do 
+    letExpr = do
         failParse "Not implemented"
 
     pairExpr :: Parser Expr
@@ -135,7 +135,7 @@ module MiniRacketParser where
     -- those. That leaves variables, but this needs to build a 
     -- NegateExpr around the VarExpr.
     negateAtom :: Parser Expr
-    negateAtom = do 
+    negateAtom = do
         symbol "-"
         a <- parseAtom
         return $ MathExpr Sub [LiteralExpr (IntVal 0), a]
@@ -144,12 +144,12 @@ module MiniRacketParser where
     -- parse a lambda expression which is a lambda, argument, 
     -- and body, with proper parenthesis around it
     lambdaExpr :: Parser Expr
-    lambdaExpr = do 
+    lambdaExpr = do
         failParse "Not implemented"
 
     -- an atom is a literalExpr, which can be an actual literal or some other things
     parseAtom :: Parser Expr
-    parseAtom = do 
+    parseAtom = do
         literalExpr
         <|> varExpr
         <|> negateAtom
@@ -168,7 +168,7 @@ module MiniRacketParser where
         <|> parseParens parseExpr
         <|> parseParens compExpr
         <|> parseParens pairExpr
-        <|> parseParens consExpr 
+        <|> parseParens consExpr
 
     -- a helper function that you can use to test your parsing:
     -- syntax is simply 'parseStr "5"' which will call parseExpr for you
