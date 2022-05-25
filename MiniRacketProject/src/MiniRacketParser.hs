@@ -63,10 +63,6 @@ module MiniRacketParser where
     notExpr :: Parser Expr
     notExpr = do parseKeyword "not" >> NotExpr <$> parseExpr
 
-    {- DON'T DEFINE THESE YET, THEY'RE NOT PART OF THE ASSIGNMENT
-    -- negateExpr :: Parser Expr
-    -}
-
     -- parse a var expression, here we need to make sure that
     -- the identifier is *not* a keyword before accepting it
     -- i.e., we fail the parse if it is     
@@ -133,7 +129,6 @@ module MiniRacketParser where
         symbol ")"
         return e
 
-    -- TODO: Implement negateAtom
     -- negate an atom, we actually only have one choice here. Our
     -- parsing already correctly builds negative numbers, and we
     -- can't have negative boolean values (so we won't bother parsing)
@@ -141,7 +136,9 @@ module MiniRacketParser where
     -- NegateExpr around the VarExpr.
     negateAtom :: Parser Expr
     negateAtom = do 
-        failParse "Not implemented"
+        symbol "-"
+        a <- parseAtom
+        return $ MathExpr Sub [LiteralExpr (IntVal 0), a]
 
     -- TODO: Implement lambdaExpr 
     -- parse a lambda expression which is a lambda, argument, 
