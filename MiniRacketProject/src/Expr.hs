@@ -16,6 +16,7 @@ module Expr where
     | MathExpr MathOp [Expr] 
     | CompExpr CompOp Expr Expr
     | PairExpr Expr Expr 
+    | VarExpr String
     | EmptyExpr 
     deriving (Show, Eq)
 

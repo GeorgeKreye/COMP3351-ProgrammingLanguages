@@ -63,10 +63,15 @@ module MiniRacketParser where
     notExpr :: Parser Expr
     notExpr = do parseKeyword "not" >> NotExpr <$> parseExpr
 
-    {- DON'T DEFINE THESE YET, THEY'RE NOT PART OF THE ASSIGNMENT 
-    -- varExpr :: Parser Expr
+    {- DON'T DEFINE THESE YET, THEY'RE NOT PART OF THE ASSIGNMENT
     -- negateExpr :: Parser Expr
     -}
+    varExpr :: Parser Expr
+    varExpr = do
+        name <- identifier
+        if name `elem` keywordList
+            then failParse (name ++ " is a keyword name, so it cannot be a variable name")
+            else return $ VarExpr name
 
     -- a bool expression is the operator followed by one or more expressions that we have to parse
     boolExpr :: Parser Expr
