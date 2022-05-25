@@ -122,6 +122,7 @@ module MiniRacketParser where
     parseAtom :: Parser Expr
     parseAtom = do 
         literalExpr
+        <|> varExpr
 
     -- the main parsing function which alternates between all the options you have
     parseExpr :: Parser Expr
@@ -133,7 +134,6 @@ module MiniRacketParser where
         <|> parseParens compExpr
         <|> parseParens pairExpr
         <|> parseParens consExpr
-        <|> parseParens varExpr
         <|> parseParens parseExpr
 
     -- a helper function that you can use to test your parsing:

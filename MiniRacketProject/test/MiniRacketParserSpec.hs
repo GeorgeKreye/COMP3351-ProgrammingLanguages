@@ -45,13 +45,18 @@ module MiniRacketParserSpec where
             it "parses math expr: (mod 1 3)" $
                 parseStr "(mod 1 3)" `shouldBe` Right (MathExpr Mod [LiteralExpr (IntVal 1), LiteralExpr (IntVal 3)], "")
         describe "parse comps" $ do
-            it "parses comp expr: (equal? 1 1)" $ -- currently fails
+            it "parses comp expr: (equal? 1 1)" $ 
                 parseStr "(equal? 1 1)" `shouldBe` Right (CompExpr Eq (LiteralExpr (IntVal 1)) (LiteralExpr (IntVal 1)), "")
             it "parses comp expr: (< 1 2)" $
                 parseStr "(< 1 2)" `shouldBe` Right (CompExpr Lt (LiteralExpr (IntVal 1)) (LiteralExpr (IntVal 2)), "")
-            it "parses comp expr: (<= 1 1)" $ -- currently fails
+            it "parses comp expr: (<= 1 1)" $ 
                 parseStr "(<= 1 1)" `shouldBe` Right (CompExpr Leq (LiteralExpr (IntVal 1)) (LiteralExpr (IntVal 1)), "")
             it "parses comp expr: (> 2 1)" $
                 parseStr "(> 2 1)" `shouldBe` Right (CompExpr Gt (LiteralExpr (IntVal 2)) (LiteralExpr (IntVal 1)), "")
-            it "parses comp expr: (>= 1 1)" $ -- currently fails
+            it "parses comp expr: (>= 1 1)" $ 
                 parseStr "(>= 1 1)" `shouldBe` Right (CompExpr Geq (LiteralExpr (IntVal 1)) (LiteralExpr (IntVal 1)), "")
+        describe "parse vars" $ do
+            it "parses var expr: var " $
+                parseStr "var" `shouldBe` Right (VarExpr "var", "")
+            it "doesn't parse var expr: and" $
+                parseStr "and" `shouldNotBe` Right (VarExpr "and", "")

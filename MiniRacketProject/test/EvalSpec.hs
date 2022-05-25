@@ -41,17 +41,22 @@ module EvalSpec where
             it "evaluates (div 4 2) = 2" $
                 evalStr "(div 4 2)" `shouldBe` Right (IntVal 2)
         describe "eval comp expressions" $ do
-            it "evaluates (equal? 1 1) = true" $ -- parse currently fails
+            it "evaluates (equal? 1 1) = true" $ 
                 evalStr "(equal? 1 1)" `shouldBe` Right (BoolVal True)
             it "evaluates (< 1 2) = true" $
                 evalStr "(< 1 2)" `shouldBe` Right (BoolVal True)
-            it "evaluates (<= 1 1) = true" $ -- parse currently fails
+            it "evaluates (<= 1 1) = true" $ 
                 evalStr "(<= 1 1)" `shouldBe` Right (BoolVal True)
-            it "evaluates (<= 1 2) = true" $ -- parse currently fails
+            it "evaluates (<= 1 2) = true" $ 
                 evalStr "(<= 1 2)" `shouldBe` Right (BoolVal True)
             it "evaluates (> 2 1) = true" $
                 evalStr "(> 2 1)" `shouldBe` Right (BoolVal True)
-            it "evaluates (>= 1 1) = true" $ -- parse currently fails
+            it "evaluates (>= 1 1) = true" $ 
                 evalStr "(>= 1 1)" `shouldBe` Right (BoolVal True)
-            it "evaluates (>= 2 1) = true" $ -- parse currently fails
+            it "evaluates (>= 2 1) = true" $ 
                 evalStr "(>= 2 1)" `shouldBe` Right (BoolVal True)
+        describe "eval var expressions" $ do
+            it "evaluates var = 1" $
+                parseAndEvalEnv [("var", IntVal 1)] "var" `shouldBe` Right (IntVal 1,([("var",IntVal 1)], EmptyExpr))
+            it "does not evaluate and = 1" $
+                parseAndEvalEnv [("and", IntVal 1)] "and" `shouldNotBe` Right (IntVal 1,([("and", IntVal 1)],EmptyExpr))

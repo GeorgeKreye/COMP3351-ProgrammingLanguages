@@ -94,9 +94,13 @@ module Eval where
        (_,LiteralExpr val) <- next
        return val
 
-    {- DON'T DEFINE THIS YET, IT'S NOT PART OF THE ASSIGNMENT
-    -- evalVar :: Evaluator Value
-    -}
+    -- evaluates a variable by getting its binding from the current environment
+    evalVar :: Evaluator Value
+    evalVar = do
+        (env, VarExpr name) <- next
+        case Env.lookup name env of
+          Nothing -> noSymbol $ "symbol " ++ name ++ " not found"
+          Just va -> return va
 
     evalSingleExpr :: ValueEnv -> Expr -> Either ErrorT Value
     evalSingleExpr env expr = case eval evalExpr (env, expr) of
@@ -277,15 +281,19 @@ module Eval where
         evalCompExpr
         <|>
         evalNotExpr
+        <|>
+        evalVar
 
 
-    -- parses the string then evaluates it
+    -- here, [] represents the empty environment
     parseAndEval :: String -> Either ErrorT (Value, (ValueEnv, Expr))
-    parseAndEval str = do
-        (ast, _) <- parse parseExpr str
-        -- here, [] represents the empty environment
-        eval evalExpr ([], ast)
+    parseAndEval = parseAndEvalEnv []
 
+    -- parses the string then evaluates it in the current environment
+    parseAndEvalEnv :: ValueEnv -> String -> Either ErrorT (Value, (ValueEnv, Expr))
+    parseAndEvalEnv env str = do
+        (ast, _) <- parse parseExpr str
+        eval evalExpr (env, ast)
 
     -- extract the value from the result, which contains extra stuff we don't need to see
     getValue :: Either ErrorT (Value, (ValueEnv, Expr)) -> Either ErrorT Value
