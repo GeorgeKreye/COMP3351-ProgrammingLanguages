@@ -10,13 +10,17 @@ module Expr where
 
   -- define the expression types
   data Expr = 
-      LiteralExpr Value 
+      BoolExpr BoolOp [Expr]
     | NotExpr Expr   
-    | BoolExpr BoolOp [Expr]
     | MathExpr MathOp [Expr] 
     | CompExpr CompOp Expr Expr
+    | VarExpr String 
+    | LiteralExpr Value 
+    | LambdaExpr String Expr 
+    | IfExpr Expr Expr Expr
+    | ApplyExpr Expr Expr
+    | LetExpr String Expr Expr
     | PairExpr Expr Expr 
-    | VarExpr String
     | EmptyExpr 
     deriving (Show, Eq)
 

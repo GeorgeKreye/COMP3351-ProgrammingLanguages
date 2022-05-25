@@ -67,7 +67,9 @@ module MiniRacketParser where
     -- negateExpr :: Parser Expr
     -}
 
-    -- parses variable names
+    -- parse a var expression, here we need to make sure that
+    -- the identifier is *not* a keyword before accepting it
+    -- i.e., we fail the parse if it is     
     varExpr :: Parser Expr
     varExpr = do
         name <- identifier
@@ -87,11 +89,29 @@ module MiniRacketParser where
     compExpr :: Parser Expr
     compExpr = CompExpr <$> parseCompOp <*> parseExpr <*> parseExpr
 
-    {- DON'T DEFINE THESE YET, THEY'RE NOT PART OF THE ASSIGNMENT 
-    -- ifExpr :: Parser Expr
-    -- applyExpr :: Parser Expr
-    -- letExpr :: Parser Expr
-    -}
+    -- TODO: Implement ifExpr
+    -- parse an if-expression, which begins with the keyword if,
+    -- and is followed by three expressions
+    ifExpr :: Parser Expr
+    ifExpr = do 
+        failParse "Not implemented"
+
+    --TODO: Implement applyExpr
+    -- what we do know is that the left argument will result in a function,
+    -- otherwise we'll have an error, but nesting them like this allows us
+    -- to further build up functions
+    applyExpr :: Parser Expr
+    applyExpr = do 
+        failParse "Not implemented"
+
+    -- TODO: Implement let expressions  
+    -- a let expression begins with the keyword let, followed by
+    -- parenthesis which contains an identifier for the name 
+    -- to be bound, an expression to bind to that name, a close
+    -- parenthesis, and a body  
+    letExpr :: Parser Expr
+    letExpr = do 
+        failParse "Not implemented"
 
     pairExpr :: Parser Expr
     pairExpr = do
@@ -113,16 +133,29 @@ module MiniRacketParser where
         symbol ")"
         return e
 
-    {- DON'T DEFINE THESE YET, THEY'RE NOT PART OF THE ASSIGNMENT 
-    -- negateAtom :: Parser Expr
-    -- lambdaExpr :: Parser Expr
-    -}
+    -- TODO: Implement negateAtom
+    -- negate an atom, we actually only have one choice here. Our
+    -- parsing already correctly builds negative numbers, and we
+    -- can't have negative boolean values (so we won't bother parsing)
+    -- those. That leaves variables, but this needs to build a 
+    -- NegateExpr around the VarExpr.
+    negateAtom :: Parser Expr
+    negateAtom = do 
+        failParse "Not implemented"
+
+    -- TODO: Implement lambdaExpr 
+    -- parse a lambda expression which is a lambda, argument, 
+    -- and body, with proper parenthesis around it
+    lambdaExpr :: Parser Expr
+    lambdaExpr = do 
+        failParse "Not implemented"
 
     -- an atom is a literalExpr, which can be an actual literal or some other things
     parseAtom :: Parser Expr
     parseAtom = do 
         literalExpr
         <|> varExpr
+        <|> negateAtom
 
     -- the main parsing function which alternates between all the options you have
     parseExpr :: Parser Expr
@@ -131,10 +164,14 @@ module MiniRacketParser where
         <|> parseParens notExpr
         <|> parseParens boolExpr
         <|> parseParens mathExpr
+        <|> parseParens ifExpr
+        <|> parseParens applyExpr
+        <|> parseParens letExpr
+        <|> parseParens lambdaExpr
+        <|> parseParens parseExpr
         <|> parseParens compExpr
         <|> parseParens pairExpr
-        <|> parseParens consExpr
-        <|> parseParens parseExpr
+        <|> parseParens consExpr 
 
     -- a helper function that you can use to test your parsing:
     -- syntax is simply 'parseStr "5"' which will call parseExpr for you
