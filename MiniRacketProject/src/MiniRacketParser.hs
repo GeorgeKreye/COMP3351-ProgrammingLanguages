@@ -46,7 +46,7 @@ module MiniRacketParser where
 
     -- keywords for keyword parsing
     keywordList :: [String]
-    keywordList = ["false", "true", "not", "and", "or", "equal?"]
+    keywordList = ["false", "true", "not", "and", "or"]
 
     -- try to parse a keyword, otherwise it's a variable, this can be
     -- used to check if the identifier we see (i.e., variable name) is
@@ -66,6 +66,8 @@ module MiniRacketParser where
     {- DON'T DEFINE THESE YET, THEY'RE NOT PART OF THE ASSIGNMENT
     -- negateExpr :: Parser Expr
     -}
+
+    -- parses variable names
     varExpr :: Parser Expr
     varExpr = do
         name <- identifier
@@ -131,6 +133,7 @@ module MiniRacketParser where
         <|> parseParens compExpr
         <|> parseParens pairExpr
         <|> parseParens consExpr
+        <|> parseParens varExpr
         <|> parseParens parseExpr
 
     -- a helper function that you can use to test your parsing:
