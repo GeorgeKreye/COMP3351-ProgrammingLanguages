@@ -264,8 +264,6 @@ module Eval where
     -- entry point for all evaluations, so we alternate between the 
     -- different options. Note that depending on what you put first might
     -- change how you evaluate your expressions.
-
-    -- TODO: Add evaluation for Not
     evalExpr :: Evaluator Value
     evalExpr =
         evalLiteral
