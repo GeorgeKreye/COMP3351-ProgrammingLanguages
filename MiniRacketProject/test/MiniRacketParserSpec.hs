@@ -60,3 +60,8 @@ module MiniRacketParserSpec where
                 parseStr "var" `shouldBe` Right (VarExpr "var", "")
             it "doesn't parse var expr: and" $
                 parseStr "and" `shouldNotBe` Right (VarExpr "and", "")
+        describe "parse negated atoms" $ do
+            it "parses negatom expr: -var" $
+                parseStr "-var" `shouldBe` Right (MathExpr Sub [LiteralExpr (IntVal 0), VarExpr "var"], "")
+            it "doesn't parse negatom expr: -true" $
+                parseStr "-true" `shouldNotBe` Right (MathExpr Sub [LiteralExpr (IntVal 0), VarExpr "true"], "s")

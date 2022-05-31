@@ -2,7 +2,7 @@ module MiniRacketParser where
     import Parser
     import Expr
     import Control.Applicative
-    import Error (ErrorT)
+    import Error (ErrorT (..))
 
     parseBool :: Parser Bool
     parseBool =
@@ -145,15 +145,19 @@ module MiniRacketParser where
     negateAtom = do
         symbol "-"
         a <- parseAtom
-        return $ MathExpr Sub [LiteralExpr (IntVal 0), a]
+        case a of 
+            VarExpr _ -> return $ MathExpr Sub [LiteralExpr (IntVal 0), a]
+            _ -> failParse "negateAtom only meant for variables"
  
     -- parse a lambda expression which is a lambda, argument, 
     -- and body, with proper parenthesis around it
     lambdaExpr :: Parser Expr
     lambdaExpr = do
+        symbol "("
         parseKeyword "lambda"
         a <- parseParens varExpr -- argument
-        b <- parseExpr -- body
+        b <- parseParens parseExpr -- body
+        symbol ")"
         case a of
             VarExpr v -> return $ LambdaExpr v b
             _ -> failParse "Argument is not a variable"
