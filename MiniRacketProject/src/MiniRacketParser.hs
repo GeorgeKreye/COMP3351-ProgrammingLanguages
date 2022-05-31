@@ -2,7 +2,7 @@ module MiniRacketParser where
     import Parser
     import Expr
     import Control.Applicative
-    import Error ( ErrorT )
+    import Error (ErrorT)
 
     parseBool :: Parser Bool
     parseBool =
@@ -100,14 +100,21 @@ module MiniRacketParser where
     applyExpr = do
         failParse "Not implemented"
 
-    -- TODO: Implement let expressions  
     -- a let expression begins with the keyword let, followed by
     -- parenthesis which contains an identifier for the name 
     -- to be bound, an expression to bind to that name, a close
     -- parenthesis, and a body  
     letExpr :: Parser Expr
     letExpr = do
-        failParse "Not implemented"
+        symbol "let"
+        symbol "("
+        v <- varExpr
+        a <- parseExpr
+        symbol ")"
+        b <- parseExpr
+        case v of
+            VarExpr n -> return $ LetExpr n a b
+            _ -> failParse "First argument after let not a variable name"
 
     pairExpr :: Parser Expr
     pairExpr = do
