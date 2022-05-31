@@ -2,7 +2,7 @@ module MiniRacketParser where
     import Parser
     import Expr
     import Control.Applicative
-    import Error (ErrorT (..))
+    import Error (ErrorT)
 
     parseBool :: Parser Bool
     parseBool =
