@@ -2,7 +2,7 @@ module MiniRacketParser where
     import Parser
     import Expr
     import Control.Applicative
-    import Error (ErrorT)
+    import Error (ErrorT (..))
 
     parseBool :: Parser Bool
     parseBool =
@@ -46,7 +46,7 @@ module MiniRacketParser where
 
     -- keywords for keyword parsing
     keywordList :: [String]
-    keywordList = ["false", "true", "not", "and", "or", "let"]
+    keywordList = ["false", "true", "not", "and", "or", "let", "lambda"]
 
     -- try to parse a keyword, otherwise it's a variable, this can be
     -- used to check if the identifier we see (i.e., variable name) is
@@ -108,7 +108,7 @@ module MiniRacketParser where
     letExpr = do
         parseKeyword "let"
         symbol "("
-        v <- varExpr
+        v <- varExpr -- needs to be a variable name
         a <- parseExpr
         symbol ")"
         b <- parseExpr
@@ -146,13 +146,17 @@ module MiniRacketParser where
         symbol "-"
         a <- parseAtom
         return $ MathExpr Sub [LiteralExpr (IntVal 0), a]
-
-    -- TODO: Implement lambdaExpr 
+ 
     -- parse a lambda expression which is a lambda, argument, 
     -- and body, with proper parenthesis around it
     lambdaExpr :: Parser Expr
     lambdaExpr = do
-        failParse "Not implemented"
+        parseKeyword "lambda"
+        a <- parseParens varExpr -- argument
+        b <- parseExpr -- body
+        case a of
+            VarExpr v -> return $ LambdaExpr v b
+            _ -> failParse "Argument is not a variable"
 
     -- an atom is a literalExpr, which can be an actual literal or some other things
     parseAtom :: Parser Expr
