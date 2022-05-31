@@ -46,7 +46,7 @@ module MiniRacketParser where
 
     -- keywords for keyword parsing
     keywordList :: [String]
-    keywordList = ["false", "true", "not", "and", "or"]
+    keywordList = ["false", "true", "not", "and", "or", "let"]
 
     -- try to parse a keyword, otherwise it's a variable, this can be
     -- used to check if the identifier we see (i.e., variable name) is
@@ -106,7 +106,7 @@ module MiniRacketParser where
     -- parenthesis, and a body  
     letExpr :: Parser Expr
     letExpr = do
-        symbol "let"
+        parseKeyword "let"
         symbol "("
         v <- varExpr
         a <- parseExpr
