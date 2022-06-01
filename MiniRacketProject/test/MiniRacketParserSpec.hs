@@ -65,3 +65,6 @@ module MiniRacketParserSpec where
                 parseStr "-var" `shouldBe` Right (MathExpr Sub [LiteralExpr (IntVal 0), VarExpr "var"], "")
             it "doesn't parse negatom expr: -true" $
                 parseStr "-true" `shouldNotBe` Right (MathExpr Sub [LiteralExpr (IntVal 0), VarExpr "true"], "s")
+        describe "parse if statements" $
+            it "parses if expr: (if true 1 0)" $
+                parseStr "(if true 1 0)" `shouldBe` Right (IfExpr (LiteralExpr (BoolVal True)) (LiteralExpr (IntVal 1)) (LiteralExpr (IntVal 0)),"")

@@ -10,7 +10,7 @@ module Eval where
     import Control.Applicative
     import Control.Monad
     import Parser
-
+    
     -- we begin with an Expr, and return an Either String (a, Expr), here
     -- the String is an error message, but Expr is the remaining expression
     -- to be evaluated
@@ -251,7 +251,6 @@ module Eval where
                     Left err -> evalError err
             Left err -> evalError err
 
-    -- TODO: Implement evalIfExpr
     -- Evaluate an if expression, this requires evaluating
     -- the first expression in the if, which is the test case.
     -- Only until this returns a value will you evaluate one
@@ -261,7 +260,16 @@ module Eval where
     evalIfExpr :: Evaluator Value
     evalIfExpr = do
         (env, IfExpr boolexpr texpr fexpr) <- next
-        evalNotImplemented 
+        case eval evalExpr (env, boolexpr) of 
+            Right (BoolVal cond, _) ->
+                if cond
+                    then case eval evalExpr (env,texpr) of
+                        Left _ -> failEval "then expression invalid"
+                        Right (v,_) -> return v
+                    else case eval evalExpr (env,fexpr) of
+                        Left _ -> failEval "else expression invalid"
+                        Right (v,_) -> return v
+            _ -> typeError "if conditional is not a boolean"
 
     -- evaluate a Not expression, which should flip the boolean result
     evalNotExpr :: Evaluator Value
@@ -282,7 +290,6 @@ module Eval where
     -- evalApplyExpr :: Evaluator Value
     -}
 
-    -- TODO: Implement callFun
     -- callFun expects a closure and a value. Inside the closure, 
     -- we find the argument name (which can be used in the body). This
     -- argument name is bound to the value in the *Closure's* environment.
@@ -294,8 +301,14 @@ module Eval where
     -- because if it evaluates the body, it will know that the function 
     -- already exists--this call to eval will result in a complicated value
     callFun :: Value -> Value -> Either ErrorT Value
-    callFun c@(ClosureVal funName argName body cenv) argVal =
-        error "not implemented"
+    callFun (ClosureVal funName argName body cenv) argVal = do
+        -- bind
+        let cenv' = Env.bind argName argVal cenv
+        case eval evalExpr (cenv', body) of
+            Right (v,_) -> return v
+            Left _ -> if funName /= ""
+                then Left (EvalError (funName ++ " body is invalid"))
+                else Left (EvalError "lambda body is invalid")
     callFun _ _ = error "callFun must have a closure passed to it"
 
     -- TODO: implement lambdas
@@ -305,7 +318,8 @@ module Eval where
     -- built with a let expression, then the let name is its name.
     evalLambdaExpr :: Evaluator Value
     evalLambdaExpr = do 
-        evalNotImplemented
+        (env, LambdaExpr arg bod) <- next
+        return $ ClosureVal "" arg bod env
 
     -- TODO: Implement function application
     -- Evaluate apply, which is a function call to an argument. 
@@ -335,6 +349,7 @@ module Eval where
     -- entry point for all evaluations, so we alternate between the 
     -- different options. Note that depending on what you put first might
     -- change how you evaluate your expressions.
+    -- TODO: get new evalExpr for Weekly 5
     evalExpr :: Evaluator Value
     evalExpr =
         evalLiteral
@@ -350,6 +365,10 @@ module Eval where
         evalNotExpr
         <|>
         evalVar
+        <|>
+        evalIfExpr
+        <|>
+        evalLambdaExpr
 
 
     -- here, [] represents the empty environment

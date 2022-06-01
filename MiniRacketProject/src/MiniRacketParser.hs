@@ -46,7 +46,7 @@ module MiniRacketParser where
 
     -- keywords for keyword parsing
     keywordList :: [String]
-    keywordList = ["false", "true", "not", "and", "or", "let", "lambda"]
+    keywordList = ["false", "true", "not", "and", "or", "let", "lambda", "if"]
 
     -- try to parse a keyword, otherwise it's a variable, this can be
     -- used to check if the identifier we see (i.e., variable name) is
@@ -153,11 +153,9 @@ module MiniRacketParser where
     -- and body, with proper parenthesis around it
     lambdaExpr :: Parser Expr
     lambdaExpr = do
-        symbol "("
         parseKeyword "lambda"
         a <- parseParens varExpr -- argument
-        b <- parseParens parseExpr -- body
-        symbol ")"
+        b <- parseExpr -- body
         case a of
             VarExpr v -> return $ LambdaExpr v b
             _ -> failParse "Argument is not a variable"

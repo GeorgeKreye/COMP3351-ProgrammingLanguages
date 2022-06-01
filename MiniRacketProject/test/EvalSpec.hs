@@ -60,3 +60,11 @@ module EvalSpec where
                 parseAndEvalEnv [("var", IntVal 1)] "var" `shouldBe` Right (IntVal 1,([("var",IntVal 1)], EmptyExpr))
             it "does not evaluate and = 1" $
                 parseAndEvalEnv [("and", IntVal 1)] "and" `shouldNotBe` Right (IntVal 1,([("and", IntVal 1)],EmptyExpr))
+        describe "eval if expressions" $ do
+            it "evaluates (if true 1 0) = 1" $
+                evalStr "(if true 1 0)" `shouldBe` Right (IntVal 1)
+            it "evaluates (if false 1 0) = 0" $
+                evalStr "(if false 1 0)" `shouldBe` Right (IntVal 0)
+        describe "callFun" $
+            it "evaluates (lambda (x) (+ x 1)), x := 1 = 2" $
+                callFun (ClosureVal "" "x" (MathExpr Add [VarExpr "x",LiteralExpr (IntVal 1)]) []) (IntVal 1) `shouldBe` Right (IntVal 2)
