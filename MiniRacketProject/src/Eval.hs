@@ -10,7 +10,7 @@ module Eval where
     import Control.Applicative
     import Control.Monad
     import Parser
-    
+
     -- we begin with an Expr, and return an Either String (a, Expr), here
     -- the String is an error message, but Expr is the remaining expression
     -- to be evaluated
@@ -260,7 +260,7 @@ module Eval where
     evalIfExpr :: Evaluator Value
     evalIfExpr = do
         (env, IfExpr boolexpr texpr fexpr) <- next
-        case eval evalExpr (env, boolexpr) of 
+        case eval evalExpr (env, boolexpr) of
             Right (BoolVal cond, _) ->
                 if cond
                     then case eval evalExpr (env,texpr) of
@@ -283,13 +283,6 @@ module Eval where
                 ClosureVal {} ->  typeError "not <boolexpr> .. must evaluate to a bool type"
                 BoolVal b -> return (BoolVal (not b))
 
-
-    {- DON'T DEFINE THESE YET, THEY'RE NOT PART OF THE ASSIGNMENT 
-    -- callFun :: Value -> Value -> Either ErrorT Value
-    -- evalLambdaExpr :: Evaluator Value
-    -- evalApplyExpr :: Evaluator Value
-    -}
-
     -- callFun expects a closure and a value. Inside the closure, 
     -- we find the argument name (which can be used in the body). This
     -- argument name is bound to the value in the *Closure's* environment.
@@ -311,17 +304,15 @@ module Eval where
                 else Left (EvalError "lambda body is invalid")
     callFun _ _ = error "callFun must have a closure passed to it"
 
-    -- TODO: implement lambdas
     -- evaluate lambdas, which requires storing the current environment as the closure,
     -- this should result in a ClosureVal, which can later be used for apply, if it's 
     -- a totally anonymous function, then "" is the function name, otherwise if it was
     -- built with a let expression, then the let name is its name.
     evalLambdaExpr :: Evaluator Value
-    evalLambdaExpr = do 
+    evalLambdaExpr = do
         (env, LambdaExpr arg bod) <- next
         return $ ClosureVal "" arg bod env
 
-    -- TODO: Implement function application
     -- Evaluate apply, which is a function call to an argument. 
     -- The first expression needs to evaluate to a closure from
     -- a lambda expression or a let binding. The second expression
@@ -330,7 +321,17 @@ module Eval where
     -- the function call
     evalApplyExpr :: Evaluator Value
     evalApplyExpr = do
-        evalNotImplemented
+        (env1, e1) <- next -- function
+        (env2, e2) <- next -- value
+        case eval evalExpr (env2, e2) of
+            Right (v,_) ->
+                case eval evalExpr (env1, e1) of
+                    Right (c@ClosureVal {},_) ->
+                        case callFun c v of
+                            Right o -> return o
+                            Left _ -> failEval "could not succesfully apply value to function"
+                    _ -> typeError "first expression for apply is not a closure"
+            Left _ -> failEval "value of second expression for apply could not be resolved"
 
     -- evaluates a Pair
     evalPairExpr :: Evaluator Value
@@ -349,7 +350,6 @@ module Eval where
     -- entry point for all evaluations, so we alternate between the 
     -- different options. Note that depending on what you put first might
     -- change how you evaluate your expressions.
-    -- TODO: get new evalExpr for Weekly 5
     evalExpr :: Evaluator Value
     evalExpr =
         evalLiteral
@@ -369,6 +369,8 @@ module Eval where
         evalIfExpr
         <|>
         evalLambdaExpr
+        <|>
+        evalApplyExpr
 
 
     -- here, [] represents the empty environment
