@@ -294,10 +294,11 @@ module Eval where
     -- because if it evaluates the body, it will know that the function 
     -- already exists--this call to eval will result in a complicated value
     callFun :: Value -> Value -> Either ErrorT Value
-    callFun (ClosureVal funName argName body cenv) argVal = do
+    callFun c@(ClosureVal funName argName body cenv) argVal = do
         -- bind
-        let cenv' = Env.bind argName argVal cenv
-        case eval evalExpr (cenv', body) of
+        let cenv' = Env.bind argName argVal cenv -- argument
+            cenv'' = Env.bind funName c cenv'    -- function for recursion
+        case eval evalExpr (cenv'', body) of
             Right (v,_) -> return v
             Left _ -> if funName /= ""
                 then Left (EvalError (funName ++ " body is invalid"))
