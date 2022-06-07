@@ -2,16 +2,16 @@ module MiniRacketParser where
     import Parser
     import Expr
     import Control.Applicative
-    import Error ( ErrorT )
+    import Error (ErrorT)
 
     parseBool :: Parser Bool
-    parseBool = 
+    parseBool =
         do parseKeyword "true" >>return True
         <|> do parseKeyword "false" >> return False
 
     -- parsing bool operations, these are 'and' and 'or'
     parseBoolOp :: Parser BoolOp
-    parseBoolOp = 
+    parseBoolOp =
         do parseKeyword "and" >> return And
         <|> do parseKeyword "or" >> return Or
 
@@ -26,27 +26,27 @@ module MiniRacketParser where
 
     -- parse the comp operations and return the CompOp
     parseCompOp :: Parser CompOp
-    parseCompOp = 
+    parseCompOp =
         do symbol "<=" >> return Leq
         <|> do symbol ">=" >> return Geq
         <|> do symbol "<" >> return Lt
         <|> do symbol ">" >> return Gt
-        <|> do symbol "equal?" >> return Eq 
+        <|> do symbol "equal?" >> return Eq
 
     -- a literal in MiniRacket is true, false, or a number
     literal :: Parser Value
-    literal = 
+    literal =
         do BoolVal <$> parseBool
         <|> do IntVal <$> natural
 
     -- parse a literal expression, which at this point, is just a literal
     literalExpr :: Parser Expr
-    literalExpr = 
+    literalExpr =
         do LiteralExpr <$> literal
 
     -- keywords for keyword parsing
     keywordList :: [String]
-    keywordList = ["false", "true", "not", "and", "or", "equal?"]
+    keywordList = ["false", "true", "not", "and", "or", "let", "lambda", "if"]
 
     -- try to parse a keyword, otherwise it's a variable, this can be
     -- used to check if the identifier we see (i.e., variable name) is
@@ -63,10 +63,15 @@ module MiniRacketParser where
     notExpr :: Parser Expr
     notExpr = do parseKeyword "not" >> NotExpr <$> parseExpr
 
-    {- DON'T DEFINE THESE YET, THEY'RE NOT PART OF THE ASSIGNMENT 
-    -- varExpr :: Parser Expr
-    -- negateExpr :: Parser Expr
-    -}
+    -- parse a var expression, here we need to make sure that
+    -- the identifier is *not* a keyword before accepting it
+    -- i.e., we fail the parse if it is     
+    varExpr :: Parser Expr
+    varExpr = do
+        name <- identifier
+        if name `elem` keywordList
+            then failParse (name ++ " is a keyword name, so it cannot be a variable name")
+            else return $ VarExpr name
 
     -- a bool expression is the operator followed by one or more expressions that we have to parse
     boolExpr :: Parser Expr
@@ -80,11 +85,34 @@ module MiniRacketParser where
     compExpr :: Parser Expr
     compExpr = CompExpr <$> parseCompOp <*> parseExpr <*> parseExpr
 
-    {- DON'T DEFINE THESE YET, THEY'RE NOT PART OF THE ASSIGNMENT 
-    -- ifExpr :: Parser Expr
-    -- applyExpr :: Parser Expr
-    -- letExpr :: Parser Expr
-    -}
+    -- parse an if-expression, which begins with the keyword if,
+    -- and is followed by three expressions
+    ifExpr :: Parser Expr
+    ifExpr = do
+        parseKeyword "if"
+        IfExpr <$> parseExpr <*> parseExpr <*> parseExpr
+
+    -- what we do know is that the left argument will result in a function,
+    -- otherwise we'll have an error, but nesting them like this allows us
+    -- to further build up functions
+    applyExpr :: Parser Expr
+    applyExpr = ApplyExpr <$> (varExpr <|> parseParens lambdaExpr) <*> literalExpr
+
+    -- a let expression begins with the keyword let, followed by
+    -- parenthesis which contains an identifier for the name 
+    -- to be bound, an expression to bind to that name, a close
+    -- parenthesis, and a body  
+    letExpr :: Parser Expr
+    letExpr = do
+        parseKeyword "let"
+        symbol "("
+        v <- varExpr -- needs to be a variable name
+        a <- parseExpr
+        symbol ")"
+        b <- parseExpr
+        case v of
+            VarExpr n -> return $ LetExpr n a b
+            _ -> failParse "First argument after let not a variable name"
 
     pairExpr :: Parser Expr
     pairExpr = do
@@ -106,15 +134,36 @@ module MiniRacketParser where
         symbol ")"
         return e
 
-    {- DON'T DEFINE THESE YET, THEY'RE NOT PART OF THE ASSIGNMENT 
-    -- negateAtom :: Parser Expr
-    -- lambdaExpr :: Parser Expr
-    -}
+    -- negate an atom, we actually only have one choice here. Our
+    -- parsing already correctly builds negative numbers, and we
+    -- can't have negative boolean values (so we won't bother parsing)
+    -- those. That leaves variables, but this needs to build a 
+    -- NegateExpr around the VarExpr.
+    negateAtom :: Parser Expr
+    negateAtom = do
+        symbol "-"
+        a <- parseAtom
+        case a of 
+            VarExpr _ -> return $ MathExpr Sub [LiteralExpr (IntVal 0), a]
+            _ -> failParse "negateAtom only meant for variables"
+ 
+    -- parse a lambda expression which is a lambda, argument, 
+    -- and body, with proper parenthesis around it
+    lambdaExpr :: Parser Expr
+    lambdaExpr = do
+        parseKeyword "lambda"
+        a <- parseParens varExpr -- argument
+        b <- parseExpr -- body
+        case a of
+            VarExpr v -> return $ LambdaExpr v b
+            _ -> failParse "Argument is not a variable"
 
     -- an atom is a literalExpr, which can be an actual literal or some other things
     parseAtom :: Parser Expr
-    parseAtom = do 
+    parseAtom = do
         literalExpr
+        <|> varExpr
+        <|> negateAtom
 
     -- the main parsing function which alternates between all the options you have
     parseExpr :: Parser Expr
@@ -123,10 +172,14 @@ module MiniRacketParser where
         <|> parseParens notExpr
         <|> parseParens boolExpr
         <|> parseParens mathExpr
+        <|> parseParens ifExpr
+        <|> parseParens applyExpr
+        <|> parseParens letExpr
+        <|> parseParens lambdaExpr
+        <|> parseParens parseExpr
         <|> parseParens compExpr
         <|> parseParens pairExpr
         <|> parseParens consExpr
-        <|> parseParens parseExpr
 
     -- a helper function that you can use to test your parsing:
     -- syntax is simply 'parseStr "5"' which will call parseExpr for you

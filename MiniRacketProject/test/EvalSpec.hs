@@ -13,7 +13,7 @@ module EvalSpec where
     spec :: Spec
     spec = do
         describe "eval literal expressions" $ do
-            it "evaluates number: 1235" $ 
+            it "evaluates number: 1235" $
                 evalStr "1235" `shouldBe` Right (IntVal 1235)
             it "evaluates negative numbers: -12235" $
                 evalStr "-12235" `shouldBe` Right (IntVal (-12235))
@@ -41,17 +41,30 @@ module EvalSpec where
             it "evaluates (div 4 2) = 2" $
                 evalStr "(div 4 2)" `shouldBe` Right (IntVal 2)
         describe "eval comp expressions" $ do
-            it "evaluates (equal? 1 1) = true" $ -- parse currently fails
+            it "evaluates (equal? 1 1) = true" $
                 evalStr "(equal? 1 1)" `shouldBe` Right (BoolVal True)
             it "evaluates (< 1 2) = true" $
                 evalStr "(< 1 2)" `shouldBe` Right (BoolVal True)
-            it "evaluates (<= 1 1) = true" $ -- parse currently fails
+            it "evaluates (<= 1 1) = true" $
                 evalStr "(<= 1 1)" `shouldBe` Right (BoolVal True)
-            it "evaluates (<= 1 2) = true" $ -- parse currently fails
+            it "evaluates (<= 1 2) = true" $
                 evalStr "(<= 1 2)" `shouldBe` Right (BoolVal True)
             it "evaluates (> 2 1) = true" $
                 evalStr "(> 2 1)" `shouldBe` Right (BoolVal True)
-            it "evaluates (>= 1 1) = true" $ -- parse currently fails
+            it "evaluates (>= 1 1) = true" $
                 evalStr "(>= 1 1)" `shouldBe` Right (BoolVal True)
-            it "evaluates (>= 2 1) = true" $ -- parse currently fails
+            it "evaluates (>= 2 1) = true" $
                 evalStr "(>= 2 1)" `shouldBe` Right (BoolVal True)
+        describe "eval var expressions" $ do
+            it "evaluates var = 1" $
+                parseAndEvalEnv [("var", IntVal 1)] "var" `shouldBe` Right (IntVal 1,([("var",IntVal 1)], EmptyExpr))
+            it "does not evaluate and = 1" $
+                parseAndEvalEnv [("and", IntVal 1)] "and" `shouldNotBe` Right (IntVal 1,([("and", IntVal 1)],EmptyExpr))
+        describe "eval if expressions" $ do
+            it "evaluates (if true 1 0) = 1" $
+                evalStr "(if true 1 0)" `shouldBe` Right (IntVal 1)
+            it "evaluates (if false 1 0) = 0" $
+                evalStr "(if false 1 0)" `shouldBe` Right (IntVal 0)
+        describe "eval apply expressions" $ do 
+            it "evaluates (lambda (x) (+ x 1)), x := 1 = 2" $
+                evalStr "((lambda (x) (+ x 1)) 1)" `shouldBe` Right (IntVal 2)

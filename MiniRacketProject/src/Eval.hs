@@ -94,9 +94,16 @@ module Eval where
        (_,LiteralExpr val) <- next
        return val
 
-    {- DON'T DEFINE THIS YET, IT'S NOT PART OF THE ASSIGNMENT
-    -- evalVar :: Evaluator Value
-    -}
+    -- Evaluate a Var, this requires looking up the symbol
+    -- in the current environment. If it's there, we return
+    -- the value. If it's not, we generate a NoSymbol error
+    -- via: noSymbol $ "symbol " ++ name ++ " not found"
+    evalVar :: Evaluator Value
+    evalVar = do
+        (env, VarExpr name) <- next
+        case Env.lookup name env of
+          Nothing -> noSymbol $ "symbol " ++ name ++ " not found"
+          Just va -> return va
 
     evalSingleExpr :: ValueEnv -> Expr -> Either ErrorT Value
     evalSingleExpr env expr = case eval evalExpr (env, expr) of
@@ -223,11 +230,46 @@ module Eval where
     calcCompExpr Geq (Right (IntVal v)) (Right (IntVal v')) = Right $ BoolVal $ v >= v'
     calcCompExpr Geq _ _ = Left $ TypeError ">= can only compare values of the numbers type"
 
+    -- Evaluate a let expression. This requires evaluating the
+    -- argument to the identifier. Once that is evaluated, we
+    -- bind the value to the name in a new environment, then
+    -- we evaluated the body with this new environment
+    evalLetExpr :: Evaluator Value
+    evalLetExpr = do
+        (env, LetExpr letName valexpr body) <- next
+        case getValue (eval evalExpr (env, valexpr)) of
+            -- we got a closure from it, but it doesn't have a name, 
+            -- so let's add that to the closure as its 'funname' 
+            Right (ClosureVal "" argName funBody cenv) ->
+                let env' = Env.bind letName (ClosureVal letName argName funBody cenv) cenv in
+                    case getValue (eval evalExpr (env', body)) of
+                        Right v -> return v
+                        Left err -> evalError err
+            Right nameval ->
+                case getValue (eval evalExpr (bind letName nameval env, body)) of
+                    Right letval -> return letval
+                    Left err -> evalError err
+            Left err -> evalError err
 
-    {- DON'T DEFINE THESE YET, THEY'RE NOT PART OF THE ASSIGNMENT
-    -- evalLetExpr :: Evaluator Value
-    -- evalIfExpr :: Evaluator Value
-    -}
+    -- Evaluate an if expression, this requires evaluating
+    -- the first expression in the if, which is the test case.
+    -- Only until this returns a value will you evaluate one
+    -- or the other branches. You do NOT evaluate both branches,
+    -- just the 2nd expression if the test case returns true,
+    -- and the 3rd expression if the test case returns false
+    evalIfExpr :: Evaluator Value
+    evalIfExpr = do
+        (env, IfExpr boolexpr texpr fexpr) <- next
+        case eval evalExpr (env, boolexpr) of
+            Right (BoolVal cond, _) ->
+                if cond
+                    then case eval evalExpr (env,texpr) of
+                        Left _ -> failEval "then expression invalid"
+                        Right (v,_) -> return v
+                    else case eval evalExpr (env,fexpr) of
+                        Left _ -> failEval "else expression invalid"
+                        Right (v,_) -> return v
+            _ -> typeError "if conditional is not a boolean"
 
     -- evaluate a Not expression, which should flip the boolean result
     evalNotExpr :: Evaluator Value
@@ -241,12 +283,55 @@ module Eval where
                 ClosureVal {} ->  typeError "not <boolexpr> .. must evaluate to a bool type"
                 BoolVal b -> return (BoolVal (not b))
 
+    -- callFun expects a closure and a value. Inside the closure, 
+    -- we find the argument name (which can be used in the body). This
+    -- argument name is bound to the value in the *Closure's* environment.
+    -- The body of the function is then evaluated using this environment,
+    -- not the current environment. 
+    -- To get recursion to work (as an Achievement), you must add
+    -- the function name to the closure's environment too before you
+    -- evaluate the expression. This ensures that recursion will work 
+    -- because if it evaluates the body, it will know that the function 
+    -- already exists--this call to eval will result in a complicated value
+    callFun :: Value -> Value -> Either ErrorT Value
+    callFun (ClosureVal funName argName body cenv) argVal = do
+        -- bind
+        let cenv' = Env.bind argName argVal cenv
+        case eval evalExpr (cenv', body) of
+            Right (v,_) -> return v
+            Left _ -> if funName /= ""
+                then Left (EvalError (funName ++ " body is invalid"))
+                else Left (EvalError "lambda body is invalid")
+    callFun _ _ = error "callFun must have a closure passed to it"
 
-    {- DON'T DEFINE THESE YET, THEY'RE NOT PART OF THE ASSIGNMENT 
-    -- callFun :: Value -> Value -> Either ErrorT Value
-    -- evalLambdaExpr :: Evaluator Value
-    -- evalApplyExpr :: Evaluator Value
-    -}
+    -- evaluate lambdas, which requires storing the current environment as the closure,
+    -- this should result in a ClosureVal, which can later be used for apply, if it's 
+    -- a totally anonymous function, then "" is the function name, otherwise if it was
+    -- built with a let expression, then the let name is its name.
+    evalLambdaExpr :: Evaluator Value
+    evalLambdaExpr = do
+        (env, LambdaExpr arg bod) <- next
+        return $ ClosureVal "" arg bod env
+
+    -- Evaluate apply, which is a function call to an argument. 
+    -- The first expression needs to evaluate to a closure from
+    -- a lambda expression or a let binding. The second expression
+    -- is is evaluated to give the resulting value to the function.
+    -- with this, we then use the callFun function to evalute
+    -- the function call
+    evalApplyExpr :: Evaluator Value
+    evalApplyExpr = do
+        (env, ApplyExpr expr val) <- next
+        case eval evalExpr (env,expr) of            -- get closure
+            Right (cl@ClosureVal {},_) -> 
+                case eval evalExpr (env, val) of    -- get value
+                    Right (v,_) -> 
+                        case callFun cl v of        -- evaluate
+                            Right r -> return r
+                            Left _ -> failEval "could not resolve an ApplyExpr"
+                    Left _ -> failEval "could not resolve second argument of an ApplyExpr to a value"
+            _ -> typeError "first argument of an ApplyExpr is not a closure"
+
     -- evaluates a Pair
     evalPairExpr :: Evaluator Value
     evalPairExpr = do
@@ -277,15 +362,25 @@ module Eval where
         evalCompExpr
         <|>
         evalNotExpr
+        <|>
+        evalApplyExpr
+        <|>
+        evalVar
+        <|>
+        evalIfExpr
+        <|>
+        evalLambdaExpr
 
 
-    -- parses the string then evaluates it
+    -- here, [] represents the empty environment
     parseAndEval :: String -> Either ErrorT (Value, (ValueEnv, Expr))
-    parseAndEval str = do
-        (ast, _) <- parse parseExpr str
-        -- here, [] represents the empty environment
-        eval evalExpr ([], ast)
+    parseAndEval = parseAndEvalEnv []
 
+    -- parses the string then evaluates it in the current environment
+    parseAndEvalEnv :: ValueEnv -> String -> Either ErrorT (Value, (ValueEnv, Expr))
+    parseAndEvalEnv env str = do
+        (ast, _) <- parse parseExpr str
+        eval evalExpr (env, ast)
 
     -- extract the value from the result, which contains extra stuff we don't need to see
     getValue :: Either ErrorT (Value, (ValueEnv, Expr)) -> Either ErrorT Value
