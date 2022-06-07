@@ -97,8 +97,7 @@ module MiniRacketParser where
     -- otherwise we'll have an error, but nesting them like this allows us
     -- to further build up functions
     applyExpr :: Parser Expr
-    applyExpr = do
-        failParse "Not implemented"
+    applyExpr = ApplyExpr <$> (varExpr <|> lambdaExpr) <*> literalExpr
 
     -- a let expression begins with the keyword let, followed by
     -- parenthesis which contains an identifier for the name 

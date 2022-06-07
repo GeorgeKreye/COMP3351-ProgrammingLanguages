@@ -321,17 +321,16 @@ module Eval where
     -- the function call
     evalApplyExpr :: Evaluator Value
     evalApplyExpr = do
-        (env1, e1) <- next -- function
-        (env2, e2) <- next -- value
-        case eval evalExpr (env2, e2) of
-            Right (v,_) ->
-                case eval evalExpr (env1, e1) of
-                    Right (c@ClosureVal {},_) ->
-                        case callFun c v of
-                            Right o -> return o
-                            Left _ -> failEval "could not succesfully apply value to function"
-                    _ -> typeError "first expression for apply is not a closure"
-            Left _ -> failEval "value of second expression for apply could not be resolved"
+        (env, ApplyExpr expr val) <- next
+        case eval evalExpr (env,expr) of            -- get closure
+            Right (cl@ClosureVal {},_) -> 
+                case eval evalExpr (env, val) of    -- get value
+                    Right (v,_) -> 
+                        case callFun cl v of        -- evaluate
+                            Right r -> return r
+                            Left _ -> failEval "could not resolve an ApplyExpr"
+                    Left _ -> failEval "could not resolve second argument of an ApplyExpr to a value"
+            _ -> typeError "first argument of an ApplyExpr is not a closure"
 
     -- evaluates a Pair
     evalPairExpr :: Evaluator Value
