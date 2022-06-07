@@ -70,7 +70,7 @@ module MiniRacketParserSpec where
                 parseStr "(if true 1 0)" `shouldBe` Right (IfExpr (LiteralExpr (BoolVal True)) (LiteralExpr (IntVal 1)) (LiteralExpr (IntVal 0)),"")
         describe "parse lambda expressions" $
             it "parses lambda expr: (lambda (x) (+ x 1)" $
-                parseStr "(lambda (x) (+ x 1)" `shouldBe` Right (LambdaExpr "x" (MathExpr Add [VarExpr "x", LiteralExpr (IntVal 1)]), "")
+                parseStr "(lambda (x) (+ x 1))" `shouldBe` Right (LambdaExpr "x" (MathExpr Add [VarExpr "x", LiteralExpr (IntVal 1)]), "")
         describe "parse apply expressions" $ do
             it "parses apply expr: ((lambda (x) (+ x 1) 1)" $
-                parseStr "((lambda (x) (+ x 1) 1)" `shouldBe` Right (ApplyExpr (LambdaExpr "x" (MathExpr Add [VarExpr "x", LiteralExpr (IntVal 1)])) (LiteralExpr (IntVal 1)), "")
+                parseStr "((lambda (x) (+ x 1)) 1)" `shouldBe` Right (ApplyExpr (LambdaExpr "x" (MathExpr Add [VarExpr "x", LiteralExpr (IntVal 1)])) (LiteralExpr (IntVal 1)), "")

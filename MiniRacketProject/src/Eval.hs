@@ -363,13 +363,13 @@ module Eval where
         <|>
         evalNotExpr
         <|>
+        evalApplyExpr
+        <|>
         evalVar
         <|>
         evalIfExpr
         <|>
         evalLambdaExpr
-        <|>
-        evalApplyExpr
 
 
     -- here, [] represents the empty environment

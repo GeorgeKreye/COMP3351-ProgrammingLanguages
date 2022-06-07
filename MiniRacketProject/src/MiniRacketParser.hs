@@ -92,12 +92,11 @@ module MiniRacketParser where
         parseKeyword "if"
         IfExpr <$> parseExpr <*> parseExpr <*> parseExpr
 
-    --TODO: Implement applyExpr
     -- what we do know is that the left argument will result in a function,
     -- otherwise we'll have an error, but nesting them like this allows us
     -- to further build up functions
     applyExpr :: Parser Expr
-    applyExpr = ApplyExpr <$> (varExpr <|> lambdaExpr) <*> literalExpr
+    applyExpr = ApplyExpr <$> (varExpr <|> parseParens lambdaExpr) <*> literalExpr
 
     -- a let expression begins with the keyword let, followed by
     -- parenthesis which contains an identifier for the name 

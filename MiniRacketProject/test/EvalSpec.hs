@@ -67,4 +67,4 @@ module EvalSpec where
                 evalStr "(if false 1 0)" `shouldBe` Right (IntVal 0)
         describe "eval apply expressions" $ do 
             it "evaluates (lambda (x) (+ x 1)), x := 1 = 2" $
-                evalStr "(lambda (x) (+ x 1)) 1" `shouldBe` Right (IntVal 1)
+                evalStr "((lambda (x) (+ x 1)) 1)" `shouldBe` Right (IntVal 2)
